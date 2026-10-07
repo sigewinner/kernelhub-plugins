@@ -91,12 +91,29 @@ for (const id of fs.readdirSync(PLUGINS_DIR).sort()) {
     external: externalTools(manifest),
     capabilities: (manifest.capabilities || []).length,
     ops: [...new Set((manifest.capabilities || []).map((c) => c.op))].sort(),
+    /**
+     * 支持的格式清单（from = 能读，to = 能写）。
+     * 应用要用它算界面显示名（「图片 PNG / JPG」这种：类型 + 最典型的两个扩展名），
+     * 所以必须在目录里带上 —— 否则「可安装」列表还没装就知道不了插件支持什么格式。
+     */
+    formats: formatLists(manifest),
     path: `plugins/${id}`,
     size: t.bytes,
     files: t.files,
     vendorSize: vendor.bytes,
     sha256: t.hash,
   });
+}
+
+/** 汇总所有能力里出现过的输入/输出格式（去重、去通配符、排序） */
+function formatLists(manifest) {
+  const from = new Set();
+  const to = new Set();
+  for (const c of manifest.capabilities || []) {
+    for (const f of c.from || []) if (f && f !== '*') from.add(String(f).toLowerCase());
+    for (const f of c.to || []) if (f && f !== '*') to.add(String(f).toLowerCase());
+  }
+  return { from: [...from].sort(), to: [...to].sort() };
 }
 
 function probeSummary(manifest) {
