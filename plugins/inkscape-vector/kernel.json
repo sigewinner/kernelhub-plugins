@@ -1,0 +1,92 @@
+{
+  "ckp": "1.0",
+  "id": "inkscape-vector",
+  "name": "Inkscape 矢量内核",
+  "version": "1.0.0",
+  "kind": "vector",
+  "description": "专业开源矢量编辑器的命令行模式：SVG/SVGZ 与 PDF/EPS/PNG 互转，可指定导出 DPI、背景色与透明背景。安装后本内核自动点亮。",
+  "homepage": "https://gitlab.com/inkscape/inkscape",
+  "license": "GPL-2.0-or-later",
+  "priority": 65,
+  "tags": ["vector", "svg", "inkscape", "pdf", "eps", "png", "render", "cli"],
+  "runtime": { "type": "python", "entry": "adapter.py", "requires": [] },
+  "probe": { "type": "ckp-executable", "target": "inkscape" },
+  "x-cli": {
+    "engine": "Inkscape",
+    "executables": {
+      "inkscape": {
+        "candidates": ["inkscape", "inkscape.exe", "inkscape.com"],
+        "prefer": ["env", "path", "bundled"]
+      }
+    },
+    "templates": [
+      {
+        "op": "render",
+        "when": { "to": ["png"] },
+        "command": "{exe:inkscape}",
+        "args": ["{input}", "--export-type=png", "--export-filename={output}",
+                 "--export-dpi={param:dpi|96}",
+                 "--export-background={param:background|#ffffff}",
+                 "--export-background-opacity={param:bg_opacity|0}"]
+      },
+      {
+        "op": "convert",
+        "when": { "to": ["pdf"] },
+        "command": "{exe:inkscape}",
+        "args": ["{input}", "--export-type=pdf", "--export-filename={output}"],
+        "optional_args": [{ "flag": "--export-text-to-path", "value": "{param:text_to_path|}" }]
+      },
+      {
+        "op": "convert",
+        "when": { "to": ["eps", "ps"] },
+        "command": "{exe:inkscape}",
+        "args": ["{input}", "--export-type=eps", "--export-filename={output}"]
+      },
+      {
+        "op": "convert",
+        "when": { "to": ["emf", "wmf"] },
+        "command": "{exe:inkscape}",
+        "args": ["{input}", "--export-type=emf", "--export-filename={output}"]
+      },
+      {
+        "op": "convert",
+        "command": "{exe:inkscape}",
+        "args": ["{input}", "--export-type={ext}", "--export-filename={output}"]
+      }
+    ]
+  },
+  "capabilities": [
+    {
+      "id": "inkscape.render",
+      "op": "render",
+      "label": "SVG → 位图",
+      "from": ["svg", "svgz", "pdf", "eps", "ai", "cdr", "wmf", "emf", "dxf", "plt"],
+      "to": ["png"]
+    },
+    {
+      "id": "inkscape.convert",
+      "op": "convert",
+      "label": "矢量格式互转",
+      "from": ["svg", "svgz", "pdf", "eps", "ai", "cdr", "wmf", "emf", "dxf", "plt"],
+      "to": ["svg", "svgz", "pdf", "eps", "ps", "emf", "wmf", "png"]
+    }
+  ],
+  "params": [
+    { "id": "dpi", "type": "int", "label": "导出 DPI", "default": 96,
+      "min": 24, "max": 2400, "when": { "to": ["png"] } },
+    { "id": "background", "type": "color", "label": "背景色", "default": "#ffffff",
+      "when": { "to": ["png"] } },
+    { "id": "bg_opacity", "type": "float", "label": "背景不透明度", "default": 0,
+      "min": 0, "max": 1, "advanced": true, "when": { "to": ["png"] } },
+    { "id": "text_to_path", "type": "string", "label": "文字转曲",
+      "description": "填 true 则导出 PDF 时把文字转成路径", "default": "",
+      "advanced": true, "when": { "to": ["pdf"] } }
+  ],
+  "hooks": {
+    "install": {
+      "type": "command", "command": "winget",
+      "args": ["install", "-e", "--id", "Inkscape.Inkscape"],
+      "description": "用 winget 安装 Inkscape"
+    }
+  }
+}

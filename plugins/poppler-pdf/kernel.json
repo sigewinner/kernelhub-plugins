@@ -1,0 +1,109 @@
+{
+  "ckp": "1.0",
+  "id": "poppler-pdf",
+  "name": "Poppler PDF 工具内核",
+  "version": "1.0.0",
+  "kind": "document",
+  "description": "Poppler 命令行工具集：pdftoppm 把 PDF 逐页渲染成 PNG/JPEG/TIFF，pdftotext 抽取文本（保留版式或纯文本）。安装后本内核自动点亮。",
+  "homepage": "https://gitlab.freedesktop.org/poppler/poppler",
+  "license": "GPL-2.0-or-later",
+  "priority": 60,
+  "tags": ["pdf", "poppler", "pdftoppm", "pdftotext", "render", "extract", "cli"],
+  "runtime": { "type": "python", "entry": "adapter.py", "requires": [] },
+  "probe": { "type": "ckp-executable", "target": "pdftoppm" },
+  "x-cli": {
+    "engine": "Poppler",
+    "executables": {
+      "pdftoppm": {
+        "candidates": ["pdftoppm", "pdftoppm.exe"],
+        "prefer": ["env", "path", "bundled"]
+      },
+      "pdftotext": {
+        "candidates": ["pdftotext", "pdftotext.exe"],
+        "prefer": ["env", "path", "bundled"]
+      }
+    },
+    "templates": [
+      {
+        "op": "render",
+        "when": { "to": ["png"] },
+        "output_mode": "glob",
+        "output_glob": "{outdir}/{stem}*.png",
+        "command": "{exe:pdftoppm}",
+        "args": ["-png", "-r", "{param:dpi|150}"],
+        "optional_args": [
+          { "flag": "-f", "value": "{param:first_page|}" },
+          { "flag": "-l", "value": "{param:last_page|}" }
+        ],
+        "tail_args": ["{input}", "{outdir}/{stem}"]
+      },
+      {
+        "op": "render",
+        "when": { "to": ["jpg", "jpeg"] },
+        "output_mode": "glob",
+        "output_glob": "{outdir}/{stem}*.jpg",
+        "command": "{exe:pdftoppm}",
+        "args": ["-jpeg", "-jpegopt", "quality={param:quality|85}", "-r", "{param:dpi|150}"],
+        "tail_args": ["{input}", "{outdir}/{stem}"]
+      },
+      {
+        "op": "render",
+        "when": { "to": ["tif", "tiff"] },
+        "output_mode": "glob",
+        "output_glob": "{outdir}/{stem}*.tif",
+        "command": "{exe:pdftoppm}",
+        "args": ["-tiff", "-r", "{param:dpi|150}"],
+        "tail_args": ["{input}", "{outdir}/{stem}"]
+      },
+      {
+        "op": "extract",
+        "when": { "to": ["text", "txt", "md", "markdown"] },
+        "command": "{exe:pdftotext}",
+        "args": ["-enc", "UTF-8"],
+        "optional_args": [
+          { "flag": "-layout", "value": "{param:keep_layout|}" },
+          { "flag": "-f", "value": "{param:first_page|}" },
+          { "flag": "-l", "value": "{param:last_page|}" }
+        ],
+        "tail_args": ["{input}", "{output}"]
+      }
+    ]
+  },
+  "capabilities": [
+    {
+      "id": "poppler.render",
+      "op": "render",
+      "label": "PDF → 逐页位图",
+      "from": ["pdf"],
+      "to": ["png", "jpg", "jpeg", "tif", "tiff"],
+      "multi_out": true
+    },
+    {
+      "id": "poppler.extract.text",
+      "op": "extract",
+      "label": "PDF → 文本",
+      "from": ["pdf"],
+      "to": ["text", "txt", "md", "markdown"]
+    }
+  ],
+  "params": [
+    { "id": "dpi", "type": "int", "label": "渲染 DPI", "default": 150,
+      "min": 36, "max": 1200, "applies_to": ["render"] },
+    { "id": "quality", "type": "int", "label": "JPEG 质量", "default": 85,
+      "min": 1, "max": 100, "when": { "to": ["jpg", "jpeg"] } },
+    { "id": "first_page", "type": "int", "label": "起始页", "default": 0,
+      "min": 0, "max": 100000, "advanced": true },
+    { "id": "last_page", "type": "int", "label": "结束页", "default": 0,
+      "min": 0, "max": 100000, "advanced": true },
+    { "id": "keep_layout", "type": "string", "label": "保留版面",
+      "description": "填 true 则用 -layout 模式抽取文本", "default": "",
+      "applies_to": ["extract"] }
+  ],
+  "hooks": {
+    "install": {
+      "type": "command", "command": "winget",
+      "args": ["install", "-e", "--id", "oschwartz10612.Poppler"],
+      "description": "用 winget 安装 Poppler for Windows"
+    }
+  }
+}

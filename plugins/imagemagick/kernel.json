@@ -1,0 +1,121 @@
+{
+  "ckp": "1.0",
+  "id": "imagemagick",
+  "name": "ImageMagick 图像内核",
+  "version": "1.0.0",
+  "kind": "image",
+  "description": "业界最经典的开源图像处理套件 ImageMagick：200+ 种位图/矢量格式互转、缩放、裁剪、旋转、加水印、色彩调整、批量优化。安装后本内核自动点亮。",
+  "homepage": "https://github.com/ImageMagick/ImageMagick",
+  "license": "ImageMagick License (Apache-2.0 风格)",
+  "priority": 65,
+  "tags": ["image", "imagemagick", "magick", "convert", "raster", "cli"],
+  "runtime": { "type": "python", "entry": "adapter.py", "requires": [] },
+  "probe": { "type": "ckp-executable", "target": "magick" },
+  "x-cli": {
+    "engine": "ImageMagick 7",
+    "executables": {
+      "magick": {
+        "candidates": ["magick", "magick.exe"],
+        "prefer": ["env", "path", "bundled"]
+      }
+    },
+    "templates": [
+      {
+        "op": "convert",
+        "command": "{exe:magick}",
+        "args": ["{input}", "-auto-orient"],
+        "optional_args": [
+          { "flag": "-resize", "value": "{param:resize_geometry|}" },
+          { "flag": "-background", "value": "{param:background|}" },
+          { "flag": "-flatten", "value": "{param:flatten_true|}" },
+          { "flag": "-quality", "value": "{param:quality|}" },
+          { "flag": "-strip", "value": "{param:strip_true|}" }
+        ],
+        "tail_args": ["{output}"]
+      },
+      {
+        "op": "transform",
+        "command": "{exe:magick}",
+        "args": ["{input}", "-auto-orient"],
+        "optional_args": [
+          { "flag": "-resize", "value": "{param:resize_geometry|}" },
+          { "flag": "-rotate", "value": "{param:rotate_angle|}" },
+          { "flag": "-crop", "value": "{param:crop_geometry|}" },
+          { "flag": "-colorspace", "value": "{param:colorspace|}" }
+        ],
+        "tail_args": ["{output}"]
+      },
+      {
+        "op": "optimize",
+        "command": "{exe:magick}",
+        "args": ["{input}", "-strip", "-define", "png:compression-level=9"],
+        "optional_args": [{ "flag": "-quality", "value": "{param:quality|}" }],
+        "tail_args": ["{output}"]
+      }
+    ]
+  },
+  "capabilities": [
+    {
+      "id": "magick.convert",
+      "op": "convert",
+      "label": "ImageMagick 格式转换",
+      "from": ["png", "jpg", "jpeg", "jfif", "gif", "bmp", "tif", "tiff", "webp", "avif",
+               "heic", "heif", "jp2", "j2k", "ico", "cur", "psd", "pdf", "eps", "svg",
+               "tga", "pcx", "dds", "exr", "hdr", "pict", "xpm", "xbm", "xwd", "pnm",
+               "ppm", "pgm", "pbm", "dpx", "fits", "mng", "miff", "otb", "qoi", "raw",
+               "sgi", "sun", "viff", "wbmp", "wpg", "wmf", "emf"],
+      "to": ["png", "jpg", "jpeg", "gif", "bmp", "tif", "tiff", "webp", "avif", "heic",
+             "jp2", "ico", "psd", "pdf", "eps", "svg", "tga", "pcx", "dds", "exr", "hdr",
+             "xpm", "xbm", "pnm", "ppm", "pgm", "pbm", "dpx", "fits", "miff", "qoi",
+             "sgi", "sun", "wbmp", "wpg"]
+    },
+    {
+      "id": "magick.transform",
+      "op": "transform",
+      "label": "ImageMagick 图像变换",
+      "from": ["*"],
+      "to": ["*"]
+    },
+    {
+      "id": "magick.optimize",
+      "op": "optimize",
+      "label": "ImageMagick 压缩优化",
+      "from": ["png", "jpg", "jpeg", "gif", "webp", "tif", "tiff"],
+      "to": ["png", "jpg", "jpeg", "gif", "webp", "tif", "tiff"]
+    }
+  ],
+  "params": [
+    { "id": "quality", "type": "int", "label": "编码质量", "default": 88,
+      "min": 1, "max": 100,
+      "when": { "to": ["jpg", "jpeg", "webp", "heic", "avif", "jp2"] } },
+    { "id": "resize_geometry", "type": "string", "label": "缩放几何",
+      "description": "ImageMagick 几何语法，例如 800x600、50%、800x600^",
+      "default": "", "advanced": false },
+    { "id": "background", "type": "color", "label": "背景色", "default": "#FFFFFF",
+      "when": { "to": ["jpg", "jpeg", "bmp", "pdf"] } },
+    { "id": "flatten_true", "type": "string", "label": "压平透明通道",
+      "description": "填 true 则在转换前执行 -flatten", "default": "",
+      "advanced": true, "when": { "to": ["jpg", "jpeg", "bmp"] } },
+    { "id": "strip_true", "type": "string", "label": "剥离元数据",
+      "description": "填 true 则执行 -strip", "default": "", "advanced": true },
+    { "id": "rotate_angle", "type": "string", "label": "旋转角度",
+      "description": "例如 90、-90、45>", "default": "", "applies_to": ["transform"] },
+    { "id": "crop_geometry", "type": "string", "label": "裁剪几何",
+      "description": "例如 400x300+50+50", "default": "", "applies_to": ["transform"] },
+    { "id": "colorspace", "type": "enum", "label": "色彩空间", "default": "",
+      "advanced": true, "applies_to": ["transform"],
+      "enum": [
+        { "value": "", "label": "不改动" },
+        { "value": "Gray", "label": "灰度" },
+        { "value": "sRGB", "label": "sRGB" },
+        { "value": "CMYK", "label": "CMYK" }
+      ] }
+  ],
+  "hooks": {
+    "install": {
+      "type": "command", "command": "winget",
+      "args": ["install", "-e", "--id", "ImageMagick.ImageMagick"],
+      "description": "用 winget 安装 ImageMagick 7"
+    }
+  }
+}

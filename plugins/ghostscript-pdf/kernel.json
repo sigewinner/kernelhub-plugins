@@ -1,0 +1,134 @@
+{
+  "ckp": "1.0",
+  "id": "ghostscript-pdf",
+  "name": "Ghostscript PDF/PS 内核",
+  "version": "1.0.0",
+  "kind": "document",
+  "description": "老牌 PostScript/PDF 解释器 Ghostscript：PDF/PS/EPS 转图片、PDF 压缩瘦身、PDF 版本降级、PDF 合并。安装后本内核自动点亮。",
+  "homepage": "https://github.com/ArtifexSoftware/ghostpdl",
+  "license": "AGPL-3.0",
+  "priority": 55,
+  "tags": ["pdf", "postscript", "ghostscript", "gs", "raster", "compress", "cli"],
+  "runtime": { "type": "python", "entry": "adapter.py", "requires": [] },
+  "probe": { "type": "ckp-executable", "target": "gs" },
+  "x-cli": {
+    "engine": "Ghostscript",
+    "executables": {
+      "gs": {
+        "candidates": ["gswin64c", "gswin64c.exe", "gswin32c", "gswin32c.exe", "gs", "gs.exe"],
+        "prefer": ["env", "path", "bundled"]
+      }
+    },
+    "templates": [
+      {
+        "op": "render",
+        "when": { "to": ["png"] },
+        "output_mode": "glob",
+        "output_glob": "{outdir}/{stem}_*.png",
+        "command": "{exe:gs}",
+        "args": ["-dSAFER", "-dBATCH", "-dNOPAUSE", "-dQUIET", "-sDEVICE=png16m",
+                 "-r{param:dpi|150}", "-dTextAlphaBits=4", "-dGraphicsAlphaBits=4"],
+        "optional_args": [
+          { "flag": "-dFirstPage", "value": "{param:first_page|}" },
+          { "flag": "-dLastPage", "value": "{param:last_page|}" }
+        ],
+        "tail_args": ["-sOutputFile={outdir}/{stem}_%03d.png", "{input}"]
+      },
+      {
+        "op": "render",
+        "when": { "to": ["jpg", "jpeg"] },
+        "output_mode": "glob",
+        "output_glob": "{outdir}/{stem}_*.jpg",
+        "command": "{exe:gs}",
+        "args": ["-dSAFER", "-dBATCH", "-dNOPAUSE", "-dQUIET", "-sDEVICE=jpeg",
+                 "-dJPEGQ={param:quality|85}", "-r{param:dpi|150}"],
+        "tail_args": ["-sOutputFile={outdir}/{stem}_%03d.jpg", "{input}"]
+      },
+      {
+        "op": "render",
+        "when": { "to": ["tif", "tiff"] },
+        "output_mode": "glob",
+        "output_glob": "{outdir}/{stem}_*.tif",
+        "command": "{exe:gs}",
+        "args": ["-dSAFER", "-dBATCH", "-dNOPAUSE", "-dQUIET", "-sDEVICE=tiff24nc",
+                 "-r{param:dpi|150}"],
+        "tail_args": ["-sOutputFile={outdir}/{stem}_%03d.tif", "{input}"]
+      },
+      {
+        "op": "convert",
+        "when": { "to": ["pdf"] },
+        "command": "{exe:gs}",
+        "args": ["-dSAFER", "-dBATCH", "-dNOPAUSE", "-dQUIET", "-sDEVICE=pdfwrite",
+                 "-dCompatibilityLevel={param:compat_level|1.7}",
+                 "-dPDFSETTINGS=/{param:pdf_settings|ebook}", "{output}", "{input}"]
+      },
+      {
+        "op": "optimize",
+        "command": "{exe:gs}",
+        "args": ["-dSAFER", "-dBATCH", "-dNOPAUSE", "-dQUIET", "-sDEVICE=pdfwrite",
+                 "-dPDFSETTINGS=/{param:pdf_settings|ebook}",
+                 "-dCompatibilityLevel=1.7", "{output}", "{input}"]
+      }
+    ]
+  },
+  "capabilities": [
+    {
+      "id": "gs.render",
+      "op": "render",
+      "label": "PDF/PS → 位图",
+      "from": ["pdf", "ps", "eps"],
+      "to": ["png", "jpg", "jpeg", "tif", "tiff"],
+      "multi_out": true
+    },
+    {
+      "id": "gs.convert",
+      "op": "convert",
+      "label": "PS/EPS/PDF → PDF",
+      "from": ["ps", "eps", "pdf"],
+      "to": ["pdf"]
+    },
+    {
+      "id": "gs.optimize",
+      "op": "optimize",
+      "label": "PDF 压缩瘦身",
+      "from": ["pdf"],
+      "to": ["pdf"]
+    }
+  ],
+  "params": [
+    { "id": "dpi", "type": "int", "label": "渲染分辨率 DPI", "default": 150,
+      "min": 36, "max": 1200, "applies_to": ["render"] },
+    { "id": "quality", "type": "int", "label": "JPEG 质量", "default": 85,
+      "min": 1, "max": 100, "when": { "to": ["jpg", "jpeg"] } },
+    { "id": "first_page", "type": "int", "label": "起始页", "default": 0,
+      "min": 0, "max": 100000, "advanced": true, "applies_to": ["render"] },
+    { "id": "last_page", "type": "int", "label": "结束页", "default": 0,
+      "min": 0, "max": 100000, "advanced": true, "applies_to": ["render"] },
+    { "id": "pdf_settings", "type": "enum", "label": "PDF 预设",
+      "description": "screen 最小 / ebook 均衡 / printer 高质量 / prepress 印刷",
+      "default": "ebook",
+      "enum": [
+        { "value": "screen", "label": "screen（72dpi，最小）" },
+        { "value": "ebook", "label": "ebook（150dpi，均衡）" },
+        { "value": "printer", "label": "printer（300dpi）" },
+        { "value": "prepress", "label": "prepress（印刷级）" },
+        { "value": "default", "label": "default（不降采样）" }
+      ] },
+    { "id": "compat_level", "type": "enum", "label": "PDF 兼容级别", "default": "1.7",
+      "advanced": true,
+      "enum": [
+        { "value": "1.3", "label": "1.3（Acrobat 4）" },
+        { "value": "1.4", "label": "1.4（Acrobat 5）" },
+        { "value": "1.5", "label": "1.5" },
+        { "value": "1.6", "label": "1.6" },
+        { "value": "1.7", "label": "1.7（默认）" }
+      ] }
+  ],
+  "hooks": {
+    "install": {
+      "type": "command", "command": "winget",
+      "args": ["install", "-e", "--id", "ArtifexSoftware.GhostScript"],
+      "description": "用 winget 安装 Ghostscript"
+    }
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "ckp": "1.0",
+  "id": "sevenzip-archive",
+  "name": "7-Zip 归档内核",
+  "version": "1.0.0",
+  "kind": "archive",
+  "description": "7-Zip 命令行：把任意文件/目录打包成 zip / 7z / tar / gzip，或解开常见压缩包。安装 7-Zip 后本内核自动点亮。",
+  "homepage": "https://github.com/ip7z/7zip",
+  "license": "LGPL-2.1-or-later",
+  "priority": 45,
+  "tags": ["archive", "zip", "7z", "tar", "gzip", "compress", "extract", "cli"],
+  "runtime": { "type": "python", "entry": "adapter.py", "requires": [] },
+  "probe": { "type": "ckp-executable", "target": "7z" },
+  "x-cli": {
+    "engine": "7-Zip",
+    "executables": {
+      "7z": {
+        "candidates": ["7z", "7z.exe", "7za", "7za.exe"],
+        "absolute": [
+          "C:/Program Files/7-Zip/7z.exe",
+          "C:/Program Files (x86)/7-Zip/7z.exe"
+        ],
+        "prefer": ["env", "path", "absolute"]
+      }
+    },
+    "templates": [
+      {
+        "op": "package",
+        "when": { "to": ["7z"] },
+        "command": "{exe:7z}",
+        "args": ["a", "-t7z", "-mx={param:level|5}", "{output}"],
+        "tail_args": ["{inputs}"]
+      },
+      {
+        "op": "package",
+        "when": { "to": ["tar"] },
+        "command": "{exe:7z}",
+        "args": ["a", "-ttar", "{output}"],
+        "tail_args": ["{inputs}"]
+      },
+      {
+        "op": "package",
+        "when": { "to": ["gz", "gzip"] },
+        "command": "{exe:7z}",
+        "args": ["a", "-tgzip", "-mx={param:level|5}", "{output}"],
+        "tail_args": ["{inputs}"]
+      },
+      {
+        "op": "package",
+        "command": "{exe:7z}",
+        "args": ["a", "-tzip", "-mx={param:level|5}"],
+        "optional_args": [{ "flag": "-p", "value": "{param:password|}" }],
+        "tail_args": ["{output}", "{inputs}"]
+      },
+      {
+        "op": "unpack",
+        "output_mode": "glob",
+        "output_glob": "{outdir}/**/*",
+        "command": "{exe:7z}",
+        "args": ["x", "-y", "-o{outdir}"],
+        "optional_args": [{ "flag": "-p", "value": "{param:password|}" }],
+        "tail_args": ["{input}"]
+      },
+      {
+        "op": "list",
+        "command": "{exe:7z}",
+        "args": ["l", "-slt", "{input}", ">", "{output}"]
+      }
+    ]
+  },
+  "capabilities": [
+    {
+      "id": "7z.package",
+      "op": "package",
+      "label": "打包压缩",
+      "from": ["*"],
+      "to": ["zip", "7z", "tar", "gz", "gzip"],
+      "multi_in": true
+    },
+    {
+      "id": "7z.unpack",
+      "op": "unpack",
+      "label": "解包",
+      "from": ["zip", "7z", "rar", "tar", "gz", "gzip", "bz2", "xz", "tgz", "cab", "iso", "jar"],
+      "to": ["*"],
+      "multi_out": true
+    }
+  ],
+  "params": [
+    { "id": "level", "type": "int", "label": "压缩级别", "default": 5,
+      "min": 0, "max": 9, "applies_to": ["package"] },
+    { "id": "password", "type": "string", "label": "密码", "default": "" }
+  ],
+  "hooks": {
+    "install": {
+      "type": "command", "command": "winget",
+      "args": ["install", "-e", "--id", "7zip.7zip"],
+      "description": "用 winget 安装 7-Zip"
+    }
+  }
+}

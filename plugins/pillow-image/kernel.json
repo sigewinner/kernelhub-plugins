@@ -1,0 +1,260 @@
+{
+  "ckp": "1.0",
+  "id": "pillow-image",
+  "name": "Pillow 图像内核",
+  "version": "1.2.0",
+  "kind": "image",
+  "description": "基于 Python Pillow 的全能位图内核：PNG/JPG/WEBP/AVIF/TIFF/GIF/BMP/ICO/HEIC 等广泛互转，并支持缩放、旋转、翻转、裁剪、灰度、去元数据等变换。",
+  "homepage": "https://github.com/python-pillow/Pillow",
+  "license": "MIT-CMU",
+  "priority": 70,
+  "tags": ["image", "raster", "png", "jpg", "webp", "avif", "heif", "tiff", "gif", "ico"],
+  "runtime": {
+    "type": "python",
+    "entry": "adapter.py",
+    "python": "auto",
+    "requires": ["PIL"]
+  },
+  "probe": {
+    "type": "python-import",
+    "target": "PIL",
+    "min_version": "9.0"
+  },
+  "capabilities": [
+    {
+      "id": "image.convert",
+      "op": "convert",
+      "label": "图像格式转换",
+      "from": ["png", "jpg", "jpeg", "jfif", "bmp", "dib", "gif", "tif", "tiff", "webp", "avif",
+               "ico", "cur", "ppm", "pgm", "pbm", "pnm", "tga", "pcx", "dds", "jp2", "j2k",
+               "psd", "qoi", "mpo", "sgi", "xbm", "icns", "heif", "heic", "hdr", "fits"],
+      "to":   ["png", "jpg", "jpeg", "bmp", "gif", "tif", "tiff", "webp", "avif", "ico",
+               "ppm", "pgm", "pbm", "pnm", "tga", "pcx", "dds", "jp2", "qoi", "pdf", "heif",
+               "xbm", "sgi"],
+      "quality": 20
+    },
+    {
+      "id": "image.transform",
+      "op": "transform",
+      "label": "图像变换（缩放/旋转/翻转/裁剪）",
+      "from": ["*"],
+      "to": ["*"],
+      "quality": 10
+    },
+    {
+      "id": "image.optimize",
+      "op": "optimize",
+      "label": "图像压缩优化",
+      "from": ["png", "jpg", "jpeg", "webp", "tif", "tiff", "avif"],
+      "to": ["png", "jpg", "jpeg", "webp", "tif", "tiff", "avif"],
+      "quality": 15
+    },
+    {
+      "id": "image.inspect",
+      "op": "inspect",
+      "label": "读取图像元信息",
+      "from": ["*"],
+      "to": ["json"],
+      "quality": 5
+    }
+  ],
+  "params": [
+    {
+      "id": "quality",
+      "type": "int",
+      "label": "编码质量",
+      "description": "有损格式的编码质量，1 最差最小，100 最好最大",
+      "default": 88,
+      "min": 1,
+      "max": 100,
+      "step": 1,
+      "when": { "to": ["jpg", "jpeg", "webp", "avif", "jp2", "heif", "heic"] }
+    },
+    {
+      "id": "lossless",
+      "type": "bool",
+      "label": "无损模式",
+      "description": "WEBP/AVIF 的无损编码（文件更大但零损失）",
+      "default": false,
+      "when": { "to": ["webp", "avif"] }
+    },
+    {
+      "id": "png_compress_level",
+      "type": "int",
+      "label": "PNG 压缩级别",
+      "description": "0 最快 / 9 最小",
+      "default": 6,
+      "min": 0,
+      "max": 9,
+      "advanced": true,
+      "when": { "to": ["png"] }
+    },
+    {
+      "id": "optimize",
+      "type": "bool",
+      "label": "启用优化编码",
+      "description": "让编码器多花点时间换取更小体积",
+      "default": true,
+      "advanced": true
+    },
+    {
+      "id": "progressive",
+      "type": "bool",
+      "label": "渐进式 JPEG",
+      "default": false,
+      "advanced": true,
+      "when": { "to": ["jpg", "jpeg"] }
+    },
+    {
+      "id": "background",
+      "type": "color",
+      "label": "透明背景填充色",
+      "description": "把带透明通道的图转成不支持透明的格式时，用该颜色填充",
+      "default": "#FFFFFF",
+      "when": { "to": ["jpg", "jpeg", "bmp", "ppm", "pdf"] }
+    },
+    {
+      "id": "strip_metadata",
+      "type": "bool",
+      "label": "剥离元数据",
+      "description": "移除 EXIF / ICC / 文本块，减小体积并保护隐私",
+      "default": false
+    },
+    {
+      "id": "autoorient",
+      "type": "bool",
+      "label": "按 EXIF 自动摆正",
+      "default": true,
+      "advanced": true
+    },
+    {
+      "id": "resize_w",
+      "type": "int",
+      "label": "宽度",
+      "description": "目标宽度（像素）；0 = 按比例自动",
+      "default": 0,
+      "min": 0,
+      "max": 30000,
+      "applies_to": ["transform", "convert"]
+    },
+    {
+      "id": "resize_h",
+      "type": "int",
+      "label": "高度",
+      "description": "目标高度（像素）；0 = 按比例自动",
+      "default": 0,
+      "min": 0,
+      "max": 30000,
+      "applies_to": ["transform", "convert"]
+    },
+    {
+      "id": "keep_aspect",
+      "type": "bool",
+      "label": "保持宽高比",
+      "default": true,
+      "applies_to": ["transform", "convert"]
+    },
+    {
+      "id": "resample",
+      "type": "enum",
+      "label": "重采样算法",
+      "default": "lanczos",
+      "advanced": true,
+      "applies_to": ["transform", "convert"],
+      "enum": [
+        { "value": "lanczos", "label": "Lanczos（最清晰，默认）" },
+        { "value": "bicubic", "label": "Bicubic（平滑）" },
+        { "value": "bilinear", "label": "Bilinear（较快）" },
+        { "value": "nearest", "label": "Nearest（像素风/最快）" },
+        { "value": "box", "label": "Box（缩略图）" }
+      ]
+    },
+    {
+      "id": "rotate",
+      "type": "float",
+      "label": "旋转角度",
+      "description": "逆时针旋转度数，可为负",
+      "default": 0,
+      "min": -360,
+      "max": 360,
+      "applies_to": ["transform", "convert"]
+    },
+    {
+      "id": "flip",
+      "type": "enum",
+      "label": "翻转",
+      "default": "none",
+      "applies_to": ["transform", "convert"],
+      "enum": [
+        { "value": "none", "label": "不翻转" },
+        { "value": "horizontal", "label": "水平镜像" },
+        { "value": "vertical", "label": "垂直镜像" },
+        { "value": "both", "label": "中心对称" }
+      ]
+    },
+    {
+      "id": "grayscale",
+      "type": "bool",
+      "label": "转为灰度",
+      "default": false,
+      "applies_to": ["transform", "convert", "optimize"]
+    },
+    {
+      "id": "crop",
+      "type": "string",
+      "label": "裁剪区域 (left,top,right,bottom)",
+      "description": "例如 10,10,210,210",
+      "default": "",
+      "advanced": true,
+      "applies_to": ["transform"]
+    },
+    {
+      "id": "frame",
+      "type": "int",
+      "label": "帧序号",
+      "description": "多帧图（GIF/WEBP/TIFF）取第几帧；-1 = 保留全部帧（动图默认）",
+      "default": -1,
+      "min": -1,
+      "max": 10000,
+      "advanced": true
+    },
+    {
+      "id": "dpi",
+      "type": "int",
+      "label": "DPI",
+      "description": "写入图像的 DPI 元数据；0 = 保持原值",
+      "default": 0,
+      "min": 0,
+      "max": 2400,
+      "advanced": true
+    },
+    {
+      "id": "ico_sizes",
+      "type": "string",
+      "label": "ICO 尺寸列表",
+      "description": "逗号分隔，例如 16,32,48,256",
+      "default": "16,32,48,256",
+      "advanced": true,
+      "when": { "to": ["ico"] }
+    },
+    {
+      "id": "pdf_dpi",
+      "type": "int",
+      "label": "PDF 输出 DPI",
+      "default": 150,
+      "min": 36,
+      "max": 1200,
+      "advanced": true,
+      "when": { "to": ["pdf"] }
+    }
+  ],
+  "hooks": {
+    "install": {
+      "type": "command",
+      "command": "python",
+      "args": ["tools/pip_bootstrap.py", "install", "--target", "vendor", "-i",
+               "https://pypi.tuna.tsinghua.edu.cn/simple", "Pillow"],
+      "description": "用项目自带的 pip 引导器安装 Pillow 到 vendor/ 目录"
+    }
+  }
+}

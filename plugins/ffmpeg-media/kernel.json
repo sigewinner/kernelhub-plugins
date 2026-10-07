@@ -1,0 +1,253 @@
+{
+  "ckp": "1.0",
+  "id": "ffmpeg-media",
+  "name": "FFmpeg 音视频内核",
+  "version": "1.1.0",
+  "kind": "media",
+  "description": "基于 FFmpeg 的音视频转换内核：容器/编码互转、抽取音轨、抽取视频帧为图片、视频转 GIF、缩放裁剪。项目 vendor 目录内已随 imageio-ffmpeg 附带一份完整的 FFmpeg 7.1 二进制，开箱即用；若系统 PATH 上有 ffmpeg，也可用 CKP_EXE_FFMPEG 指定。",
+  "homepage": "https://github.com/FFmpeg/FFmpeg",
+  "license": "LGPL-2.1-or-later / GPL-2.0-or-later",
+  "priority": 60,
+  "tags": ["media", "video", "audio", "ffmpeg", "mp4", "gif", "mp3", "transcode"],
+  "runtime": {
+    "type": "python",
+    "entry": "adapter.py",
+    "requires": []
+  },
+  "probe": {
+    "type": "ckp-executable",
+    "target": "ffmpeg"
+  },
+  "x-cli": {
+    "engine": "FFmpeg",
+    "executables": {
+      "ffmpeg": {
+        "candidates": ["ffmpeg", "ffmpeg.exe"],
+        "python": "imageio_ffmpeg:get_ffmpeg_exe",
+        "bundled": [
+          "vendor/imageio_ffmpeg/binaries/ffmpeg-*.exe",
+          "kernels/ffmpeg/bin/ffmpeg.exe"
+        ]
+      }
+    },
+    "templates": [
+      {
+        "op": "convert",
+        "when": { "to": ["gif"] },
+        "command": "{exe:ffmpeg}",
+        "args": ["-y", "-hide_banner", "-loglevel", "error", "-i", "{input}",
+                 "-vf", "fps={param:fps|12},scale={param:gif_width|480}:-1:flags=lanczos",
+                 "-loop", "0", "{output}"]
+      },
+      {
+        "op": "convert",
+        "when": { "to": ["mp3", "wav", "flac", "aac", "ogg", "opus", "m4a", "wma", "aiff"] },
+        "command": "{exe:ffmpeg}",
+        "args": ["-y", "-hide_banner", "-loglevel", "error", "-i", "{input}", "-vn"],
+        "optional_args": [{ "flag": "-b:a", "value": "{param:audio_bitrate|}" }],
+        "tail_args": ["{output}"]
+      },
+      {
+        "op": "convert",
+        "when": { "to": ["webm"] },
+        "command": "{exe:ffmpeg}",
+        "args": ["-y", "-hide_banner", "-loglevel", "error", "-i", "{input}",
+                 "-c:v", "libvpx-vp9", "-crf", "{param:crf|32}", "-b:v", "0",
+                 "-c:a", "libopus", "{output}"]
+      },
+      {
+        "op": "convert",
+        "command": "{exe:ffmpeg}",
+        "args": ["-y", "-hide_banner", "-loglevel", "error", "-i", "{input}",
+                 "-c:v", "{param:vcodec|libx264}", "-crf", "{param:crf|23}",
+                 "-preset", "{param:preset|medium}"],
+        "optional_args": [{ "flag": "-c:a", "value": "{param:acodec|aac}" }],
+        "tail_args": ["{output}"]
+      },
+      {
+        "op": "transform",
+        "command": "{exe:ffmpeg}",
+        "args": ["-y", "-hide_banner", "-loglevel", "error", "-i", "{input}",
+                 "-vf", "scale={param:resize_w|1280}:-2",
+                 "-c:v", "libx264", "-crf", "{param:crf|23}"],
+        "optional_args": [
+          { "flag": "-ss", "value": "{param:start|}" },
+          { "flag": "-t", "value": "{param:duration|}" }
+        ],
+        "tail_args": ["-c:a", "copy", "{output}"]
+      },
+      {
+        "op": "extract",
+        "when": { "to": ["mp3", "wav", "flac", "aac", "ogg", "opus", "m4a", "wma"] },
+        "command": "{exe:ffmpeg}",
+        "args": ["-y", "-hide_banner", "-loglevel", "error", "-i", "{input}", "-vn"],
+        "optional_args": [{ "flag": "-b:a", "value": "{param:audio_bitrate|}" }],
+        "tail_args": ["{output}"]
+      },
+      {
+        "op": "extract",
+        "when": { "to": ["png", "jpg", "jpeg", "webp", "bmp", "tif", "tiff"] },
+        "output_mode": "glob",
+        "output_glob": "{outdir}/{stem}_*.{ext}",
+        "command": "{exe:ffmpeg}",
+        "args": ["-y", "-hide_banner", "-loglevel", "error", "-i", "{input}",
+                 "-vf", "fps={param:fps|1}"],
+        "optional_args": [{ "flag": "-frames:v", "value": "{param:max_frames|}" }],
+        "tail_args": ["{outdir}/{stem}_%04d.{ext}"]
+      }
+    ]
+  },
+  "capabilities": [
+    {
+      "id": "media.convert",
+      "op": "convert",
+      "label": "音视频转码",
+      "from": ["mp4", "mkv", "avi", "mov", "webm", "flv", "wmv", "mpg", "mpeg", "m4v",
+               "ts", "3gp", "ogv", "vob", "rmvb", "asf", "mp3", "wav", "flac", "aac",
+               "ogg", "opus", "m4a", "wma", "aiff", "amr", "gif"],
+      "to": ["mp4", "mkv", "avi", "mov", "webm", "flv", "wmv", "mpg", "mpeg", "ts",
+             "gif", "mp3", "wav", "flac", "aac", "ogg", "opus", "m4a", "wma", "aiff"]
+    },
+    {
+      "id": "media.transform",
+      "op": "transform",
+      "label": "音视频变换（缩放/截取）",
+      "from": ["mp4", "mkv", "avi", "mov", "webm", "flv", "wmv", "mpg", "mpeg", "m4v", "ts", "gif"],
+      "to": ["mp4", "mkv", "avi", "mov", "webm", "flv", "wmv", "mpg", "mpeg", "ts", "gif"]
+    },
+    {
+      "id": "media.extract.audio",
+      "op": "extract",
+      "label": "抽取音轨",
+      "from": ["mp4", "mkv", "avi", "mov", "webm", "flv", "wmv", "mpg", "mpeg", "m4v", "ts"],
+      "to": ["mp3", "wav", "flac", "aac", "ogg", "opus", "m4a", "wma"]
+    },
+    {
+      "id": "media.extract.frames",
+      "op": "extract",
+      "label": "抽取视频帧",
+      "from": ["mp4", "mkv", "avi", "mov", "webm", "flv", "wmv", "mpg", "mpeg", "m4v", "ts", "gif"],
+      "to": ["png", "jpg", "jpeg", "webp", "bmp", "tif", "tiff"],
+      "multi_out": true
+    }
+  ],
+  "params": [
+    {
+      "id": "crf",
+      "type": "int",
+      "label": "视频质量 CRF",
+      "description": "0 无损 / 18 视觉无损 / 23 默认 / 51 最差",
+      "default": 23,
+      "min": 0,
+      "max": 51,
+      "advanced": true
+    },
+    {
+      "id": "preset",
+      "type": "enum",
+      "label": "编码速度预设",
+      "default": "medium",
+      "advanced": true,
+      "enum": [
+        { "value": "ultrafast", "label": "ultrafast（最快）" },
+        { "value": "veryfast", "label": "veryfast" },
+        { "value": "faster", "label": "faster" },
+        { "value": "medium", "label": "medium（默认）" },
+        { "value": "slow", "label": "slow" },
+        { "value": "veryslow", "label": "veryslow（最小）" }
+      ]
+    },
+    {
+      "id": "vcodec",
+      "type": "string",
+      "label": "视频编码器",
+      "default": "libx264",
+      "advanced": true
+    },
+    {
+      "id": "acodec",
+      "type": "string",
+      "label": "音频编码器",
+      "default": "aac",
+      "advanced": true
+    },
+    {
+      "id": "audio_bitrate",
+      "type": "enum",
+      "label": "音频码率",
+      "default": "192k",
+      "enum": [
+        { "value": "96k", "label": "96 kbps" },
+        { "value": "128k", "label": "128 kbps" },
+        { "value": "192k", "label": "192 kbps（默认）" },
+        { "value": "256k", "label": "256 kbps" },
+        { "value": "320k", "label": "320 kbps" }
+      ]
+    },
+    {
+      "id": "fps",
+      "type": "int",
+      "label": "帧率 / 抽帧频率",
+      "description": "转 GIF 时的帧率；抽帧时表示每秒抽几帧",
+      "default": 12,
+      "min": 1,
+      "max": 120
+    },
+    {
+      "id": "gif_width",
+      "type": "int",
+      "label": "GIF 宽度",
+      "default": 480,
+      "min": 16,
+      "max": 4096,
+      "when": { "to": ["gif"] }
+    },
+    {
+      "id": "resize_w",
+      "type": "int",
+      "label": "缩放宽度",
+      "description": "高度按比例自动计算",
+      "default": 1280,
+      "min": 16,
+      "max": 16384,
+      "applies_to": ["transform"]
+    },
+    {
+      "id": "start",
+      "type": "string",
+      "label": "起始时间",
+      "description": "例如 00:00:10 或 10",
+      "default": "",
+      "advanced": true,
+      "applies_to": ["transform"]
+    },
+    {
+      "id": "duration",
+      "type": "string",
+      "label": "持续时长",
+      "description": "例如 30 或 00:00:30",
+      "default": "",
+      "advanced": true,
+      "applies_to": ["transform"]
+    },
+    {
+      "id": "max_frames",
+      "type": "int",
+      "label": "最多抽取帧数",
+      "description": "0 或留空 = 不限",
+      "default": 0,
+      "min": 0,
+      "max": 100000,
+      "applies_to": ["extract"]
+    }
+  ],
+  "hooks": {
+    "install": {
+      "type": "command",
+      "command": "python",
+      "args": ["tools/pip_bootstrap.py", "install", "--target", "vendor", "-i",
+               "https://pypi.tuna.tsinghua.edu.cn/simple", "imageio-ffmpeg"],
+      "description": "安装 imageio-ffmpeg，它会附带一份完整的 FFmpeg 二进制"
+    }
+  }
+}

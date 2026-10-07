@@ -1,0 +1,92 @@
+{
+  "ckp": "1.0",
+  "id": "pandoc-document",
+  "name": "Pandoc 文档内核",
+  "version": "1.0.0",
+  "kind": "document",
+  "description": "「文档转换界的瑞士军刀」Pandoc：Markdown / HTML / DOCX / ODT / LaTeX / EPUB / reStructuredText / MediaWiki 等几十种标记与文档格式互转。安装后本内核自动点亮。",
+  "homepage": "https://github.com/jgm/pandoc",
+  "license": "GPL-2.0-or-later",
+  "priority": 70,
+  "tags": ["document", "pandoc", "markdown", "docx", "html", "latex", "epub", "pdf", "cli"],
+  "runtime": { "type": "python", "entry": "adapter.py", "requires": [] },
+  "probe": { "type": "ckp-executable", "target": "pandoc" },
+  "x-cli": {
+    "engine": "Pandoc",
+    "executables": {
+      "pandoc": {
+        "candidates": ["pandoc", "pandoc.exe"],
+        "prefer": ["env", "path", "bundled"]
+      }
+    },
+    "templates": [
+      {
+        "op": "convert",
+        "when": { "to": ["pdf"] },
+        "command": "{exe:pandoc}",
+        "args": ["{input}", "-o", "{output}", "--standalone",
+                 "--pdf-engine={param:pdf_engine|xelatex}"],
+        "optional_args": [
+          { "flag": "--toc", "value": "{param:toc_true|}" },
+          { "flag": "--metadata", "value": "{param:title|}" }
+        ]
+      },
+      {
+        "op": "convert",
+        "command": "{exe:pandoc}",
+        "args": ["{input}", "-o", "{output}", "--standalone"],
+        "optional_args": [
+          { "flag": "--toc", "value": "{param:toc_true|}" },
+          { "flag": "--from", "value": "{param:from_format|}" },
+          { "flag": "--to", "value": "{param:to_format|}" },
+          { "flag": "--reference-doc", "value": "{param:reference_doc|}" }
+        ]
+      }
+    ]
+  },
+  "capabilities": [
+    {
+      "id": "pandoc.convert",
+      "op": "convert",
+      "label": "Pandoc 文档转换",
+      "from": ["md", "markdown", "html", "htm", "docx", "odt", "rtf", "rst", "latex",
+               "tex", "epub", "txt", "text", "json", "ipynb", "org", "mediawiki",
+               "textile", "docbook", "opml", "csv", "tsv", "bib", "man", "typst",
+               "typ", "djot", "native", "adoc", "asciidoc"],
+      "to": ["html", "docx", "odt", "rtf", "pdf", "epub", "md", "markdown", "rst",
+             "latex", "tex", "txt", "text", "pptx", "json", "ipynb", "org", "mediawiki",
+             "textile", "docbook", "opml", "csv", "typst", "typ", "djot", "native",
+             "adoc", "asciidoc", "rtf"]
+    }
+  ],
+  "params": [
+    { "id": "pdf_engine", "type": "enum", "label": "PDF 引擎", "default": "xelatex",
+      "when": { "to": ["pdf"] },
+      "enum": [
+        { "value": "xelatex", "label": "xelatex（支持中文）" },
+        { "value": "pdflatex", "label": "pdflatex" },
+        { "value": "lualatex", "label": "lualatex" },
+        { "value": "wkhtmltopdf", "label": "wkhtmltopdf" },
+        { "value": "weasyprint", "label": "weasyprint" },
+        { "value": "typst", "label": "typst" }
+      ] },
+    { "id": "toc_true", "type": "string", "label": "生成目录",
+      "description": "填 true 则加 --toc", "default": "" },
+    { "id": "title", "type": "string", "label": "文档标题", "default": "",
+      "description": "作为 metadata title 传入" },
+    { "id": "from_format", "type": "string", "label": "强制输入格式",
+      "description": "留空则按扩展名自动判断", "default": "", "advanced": true },
+    { "id": "to_format", "type": "string", "label": "强制输出格式",
+      "description": "留空则按扩展名自动判断", "default": "", "advanced": true },
+    { "id": "reference_doc", "type": "path", "label": "参考模板文件",
+      "description": "DOCX/ODT 样式模板（--reference-doc）", "default": "",
+      "advanced": true }
+  ],
+  "hooks": {
+    "install": {
+      "type": "command", "command": "winget",
+      "args": ["install", "-e", "--id", "JohnMacFarlane.Pandoc"],
+      "description": "用 winget 安装 Pandoc"
+    }
+  }
+}

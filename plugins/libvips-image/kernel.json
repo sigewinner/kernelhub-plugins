@@ -1,0 +1,103 @@
+{
+  "ckp": "1.0",
+  "id": "libvips-image",
+  "name": "libvips 高性能图像内核",
+  "version": "1.0.0",
+  "kind": "image",
+  "description": "以极低内存占用著称的高性能图像库 libvips：超大图（几十亿像素）转换与缩略图生成的首选。安装 vips 命令行后本内核自动点亮。",
+  "homepage": "https://github.com/libvips/libvips",
+  "license": "LGPL-2.1-or-later",
+  "priority": 60,
+  "tags": ["image", "vips", "libvips", "thumbnail", "performance", "large-image", "cli"],
+  "runtime": { "type": "python", "entry": "adapter.py", "requires": [] },
+  "probe": { "type": "ckp-executable", "target": "vips" },
+  "x-cli": {
+    "engine": "libvips",
+    "executables": {
+      "vips": {
+        "candidates": ["vips", "vips.exe"],
+        "prefer": ["env", "path", "bundled"]
+      }
+    },
+    "templates": [
+      {
+        "op": "transform",
+        "command": "{exe:vips}",
+        "args": ["thumbnail", "{input}", "{output}", "{param:resize_w|512}",
+                 "--height", "{param:resize_h|512}", "--size",
+                 "{param:size_mode|down}"]
+      },
+      {
+        "op": "render",
+        "command": "{exe:vips}",
+        "args": ["thumbnail", "{input}", "{output}", "{param:resize_w|1024}"]
+      },
+      {
+        "op": "convert",
+        "command": "{exe:vips}",
+        "args": ["copy", "{input}", "{output}"]
+      },
+      {
+        "op": "optimize",
+        "command": "{exe:vips}",
+        "args": ["copy", "{input}", "{output}[Q={param:quality|85},strip]"]
+      }
+    ]
+  },
+  "capabilities": [
+    {
+      "id": "vips.convert",
+      "op": "convert",
+      "label": "libvips 格式转换",
+      "from": ["png", "jpg", "jpeg", "tif", "tiff", "webp", "avif", "heic", "heif",
+               "gif", "bmp", "svg", "pdf", "jp2", "ppm", "pgm", "pbm", "fits", "hdr",
+               "exr", "raw", "magick"],
+      "to": ["png", "jpg", "jpeg", "tif", "tiff", "webp", "avif", "heic", "gif", "jp2",
+             "pdf", "ppm", "pgm", "pbm", "fits", "hdr", "exr"]
+    },
+    {
+      "id": "vips.transform",
+      "op": "transform",
+      "label": "libvips 缩略图/缩放",
+      "from": ["png", "jpg", "jpeg", "tif", "tiff", "webp", "avif", "heic", "gif", "svg", "pdf"],
+      "to": ["png", "jpg", "jpeg", "tif", "tiff", "webp", "avif", "heic"]
+    },
+    {
+      "id": "vips.render",
+      "op": "render",
+      "label": "SVG/PDF → 位图（libvips）",
+      "from": ["svg", "pdf", "eps", "ps"],
+      "to": ["png", "jpg", "jpeg", "webp", "tif", "tiff"]
+    },
+    {
+      "id": "vips.optimize",
+      "op": "optimize",
+      "label": "libvips 压缩优化",
+      "from": ["png", "jpg", "jpeg", "webp", "avif", "tif", "tiff"],
+      "to": ["png", "jpg", "jpeg", "webp", "avif", "tif", "tiff"]
+    }
+  ],
+  "params": [
+    { "id": "resize_w", "type": "int", "label": "宽度", "default": 512,
+      "min": 1, "max": 100000, "applies_to": ["transform", "render"] },
+    { "id": "resize_h", "type": "int", "label": "高度", "default": 512,
+      "min": 1, "max": 100000, "applies_to": ["transform"] },
+    { "id": "size_mode", "type": "enum", "label": "尺寸模式", "default": "down",
+      "advanced": true, "applies_to": ["transform"],
+      "enum": [
+        { "value": "down", "label": "down（只缩小，不放大）" },
+        { "value": "both", "label": "both（可放大）" },
+        { "value": "force", "label": "force（强制拉伸）" },
+        { "value": "inside", "label": "inside（适配框内）" }
+      ] },
+    { "id": "quality", "type": "int", "label": "编码质量", "default": 85,
+      "min": 1, "max": 100, "when": { "to": ["jpg", "jpeg", "webp", "avif", "heic"] } }
+  ],
+  "hooks": {
+    "install": {
+      "type": "command", "command": "winget",
+      "args": ["install", "-e", "--id", "libvips.libvips"],
+      "description": "用 winget 安装 libvips"
+    }
+  }
+}

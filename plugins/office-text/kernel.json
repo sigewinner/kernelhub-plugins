@@ -1,0 +1,65 @@
+{
+  "ckp": "1.0",
+  "id": "office-text",
+  "name": "Office 文档抽取内核",
+  "version": "1.0.0",
+  "kind": "document",
+  "description": "把 DOCX / XLSX / PPTX 抽取成文本、Markdown、HTML、CSV、JSON，**不需要安装 Office 或 LibreOffice**。DOCX 保留标题层级与表格，XLSX 逐表导出，PPTX 按页导出标题/正文/备注。",
+  "homepage": "https://github.com/python-openxml/python-docx",
+  "license": "MIT",
+  "priority": 52,
+  "tags": ["office", "docx", "xlsx", "pptx", "word", "excel", "powerpoint", "extract", "python"],
+  "runtime": {
+    "type": "python",
+    "entry": "adapter.py",
+    "requires": []
+  },
+  "probe": { "type": "none" },
+  "capabilities": [
+    {
+      "id": "office.extract.docx",
+      "op": "extract",
+      "label": "DOCX → 文本/Markdown/HTML/JSON",
+      "from": ["docx", "docm"],
+      "to": ["text", "txt", "md", "markdown", "html", "htm", "json"]
+    },
+    {
+      "id": "office.extract.xlsx",
+      "op": "extract",
+      "label": "XLSX → CSV/JSON/Markdown/HTML",
+      "from": ["xlsx", "xlsm"],
+      "to": ["csv", "json", "md", "markdown", "html", "htm", "text", "txt"]
+    },
+    {
+      "id": "office.extract.pptx",
+      "op": "extract",
+      "label": "PPTX → 文本/Markdown/HTML/JSON",
+      "from": ["pptx", "pptm"],
+      "to": ["text", "txt", "md", "markdown", "html", "htm", "json"]
+    },
+    {
+      "id": "office.convert",
+      "op": "convert",
+      "label": "Office 文档转换（等同于抽取）",
+      "from": ["docx", "docm", "xlsx", "xlsm", "pptx", "pptm"],
+      "to": ["text", "txt", "md", "markdown", "html", "htm", "json", "csv"],
+      "quality": -10
+    }
+  ],
+  "params": [
+    { "id": "title", "type": "string", "label": "HTML 标题", "default": "",
+      "when": { "to": ["html", "htm"] } },
+    { "id": "sheet", "type": "string", "label": "工作表名",
+      "description": "留空 = 第一个工作表", "default": "", "advanced": true,
+      "when": { "from": ["xlsx", "xlsm"] } }
+  ],
+  "hooks": {
+    "install": {
+      "type": "command", "command": "python",
+      "args": ["tools/pip_bootstrap.py", "install", "--target", "vendor", "-i",
+               "https://pypi.tuna.tsinghua.edu.cn/simple",
+               "python-docx", "openpyxl", "python-pptx"],
+      "description": "安装 python-docx / openpyxl / python-pptx"
+    }
+  }
+}

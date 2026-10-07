@@ -1,0 +1,12 @@
+# 本仓库含大量第三方二进制（.dll/.exe/.pyd）与逐字节复现的 vendor 内容，
+# 且 catalog.json 里的 sha256 是「内容树哈希」。
+# 关闭一切行尾转换（-text），保证 clone / checkout 出来的字节与哈希完全一致。
+* -text
+
+# 本仓库自己的文本文件显式按 UTF-8 + LF 处理，便于跨平台协作
+README.md            text eol=lf
+.gitattributes       text eol=lf
+catalog.json         text eol=lf
+tools/*.js           text eol=lf
+docs/*.md            text eol=lf
+docs/schemas/*.json  text eol=lf

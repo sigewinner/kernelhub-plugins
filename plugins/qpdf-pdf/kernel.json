@@ -1,0 +1,129 @@
+{
+  "ckp": "1.0",
+  "id": "qpdf-pdf",
+  "name": "QPDF 结构内核",
+  "version": "1.0.0",
+  "kind": "document",
+  "description": "专注于 PDF 内部结构的 qpdf：线性化（优化 Web 打开速度）、加解密、页面拆分与合并、结构重整。无损处理，不改动页面内容。安装后本内核自动点亮。",
+  "homepage": "https://github.com/qpdf/qpdf",
+  "license": "Apache-2.0",
+  "priority": 50,
+  "tags": ["pdf", "qpdf", "linearize", "encrypt", "decrypt", "split", "merge", "cli"],
+  "runtime": { "type": "python", "entry": "adapter.py", "requires": [] },
+  "probe": { "type": "ckp-executable", "target": "qpdf" },
+  "x-cli": {
+    "engine": "QPDF",
+    "executables": {
+      "qpdf": {
+        "candidates": ["qpdf", "qpdf.exe"],
+        "prefer": ["env", "path", "bundled"]
+      }
+    },
+    "templates": [
+      {
+        "op": "optimize",
+        "command": "{exe:qpdf}",
+        "args": ["--linearize", "--compress-streams=y", "--object-streams=generate",
+                 "{input}", "{output}"]
+      },
+      {
+        "op": "convert",
+        "when": { "to": ["pdf"] },
+        "command": "{exe:qpdf}",
+        "args": ["--linearize", "{input}", "{output}"]
+      },
+      {
+        "op": "decrypt",
+        "command": "{exe:qpdf}",
+        "args": ["--decrypt", "{input}", "{output}"]
+      },
+      {
+        "op": "encrypt",
+        "command": "{exe:qpdf}",
+        "args": ["--encrypt", "{param:user_password|user}",
+                 "{param:owner_password|owner}", "{param:key_length|256}", "--",
+                 "{input}", "{output}"]
+      },
+      {
+        "op": "split",
+        "output_mode": "glob",
+        "output_glob": "{outdir}/{stem}-*.pdf",
+        "command": "{exe:qpdf}",
+        "args": ["--split-pages={param:pages_per_file|1}", "{input}",
+                 "{outdir}/{stem}-%d.pdf"]
+      },
+      {
+        "op": "inspect",
+        "command": "{exe:qpdf}",
+        "args": ["--json", "--json-key=pages", "{input}", "{output}"]
+      }
+    ]
+  },
+  "capabilities": [
+    {
+      "id": "qpdf.optimize",
+      "op": "optimize",
+      "label": "PDF 线性化优化",
+      "from": ["pdf"],
+      "to": ["pdf"]
+    },
+    {
+      "id": "qpdf.convert",
+      "op": "convert",
+      "label": "PDF 重整",
+      "from": ["pdf"],
+      "to": ["pdf"]
+    },
+    {
+      "id": "qpdf.decrypt",
+      "op": "decrypt",
+      "label": "PDF 解密",
+      "from": ["pdf"],
+      "to": ["pdf"]
+    },
+    {
+      "id": "qpdf.encrypt",
+      "op": "encrypt",
+      "label": "PDF 加密",
+      "from": ["pdf"],
+      "to": ["pdf"]
+    },
+    {
+      "id": "qpdf.split",
+      "op": "split",
+      "label": "PDF 拆分",
+      "from": ["pdf"],
+      "to": ["pdf"],
+      "multi_out": true
+    },
+    {
+      "id": "qpdf.inspect",
+      "op": "inspect",
+      "label": "PDF 结构检查",
+      "from": ["pdf"],
+      "to": ["json"]
+    }
+  ],
+  "params": [
+    { "id": "user_password", "type": "string", "label": "用户密码（打开密码）",
+      "default": "", "applies_to": ["encrypt"] },
+    { "id": "owner_password", "type": "string", "label": "所有者密码（权限密码）",
+      "default": "", "applies_to": ["encrypt"] },
+    { "id": "key_length", "type": "enum", "label": "密钥长度", "default": "256",
+      "applies_to": ["encrypt"],
+      "enum": [
+        { "value": "40", "label": "40 位（RC4，最弱）" },
+        { "value": "128", "label": "128 位（RC4/AES）" },
+        { "value": "256", "label": "256 位（AES，推荐）" }
+      ] },
+    { "id": "pages_per_file", "type": "int", "label": "每个文件页数", "default": 1,
+      "min": 1, "max": 10000, "applies_to": ["split"] }
+  ],
+  "hooks": {
+    "install": {
+      "type": "command", "command": "winget",
+      "args": ["install", "-e", "--id", "qpdf.qpdf"],
+      "description": "用 winget 安装 qpdf"
+    }
+  }
+}

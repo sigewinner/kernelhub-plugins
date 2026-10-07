@@ -1,0 +1,773 @@
+{
+  "schema": 1,
+  "ckp": "1.0",
+  "app": ">=2.0.0",
+  "repository": "https://github.com/sigewinner/kernelhub-plugins",
+  "updated": "2026-10-07",
+  "pluginCount": 19,
+  "totalSize": 306454759,
+  "plugins": [
+    {
+      "id": "data-table",
+      "name": "表格数据内核",
+      "version": "1.0.0",
+      "ckp": "1.0",
+      "kind": "data",
+      "description": "CSV / TSV / JSON / XLSX / Markdown 表格 / HTML 表格 六种表格表示之间互转。Excel 读写由 openpyxl 提供，其余用标准库，完全离线。",
+      "homepage": "https://github.com/ericgazoni/openpyxl",
+      "license": "MIT",
+      "priority": 50,
+      "tags": [
+        "data",
+        "table",
+        "csv",
+        "tsv",
+        "json",
+        "xlsx",
+        "excel",
+        "markdown",
+        "python"
+      ],
+      "runtime": "python",
+      "requires": [],
+      "probe": {
+        "type": "none",
+        "target": ""
+      },
+      "external": [],
+      "capabilities": 1,
+      "ops": [
+        "convert"
+      ],
+      "path": "plugins/data-table",
+      "size": 947565,
+      "files": 210,
+      "vendorSize": 934533,
+      "sha256": "08362b888d217124a5b3b9cd9e0cb93238661a992787fa3ae496d98128e1dadc"
+    },
+    {
+      "id": "ffmpeg-media",
+      "name": "FFmpeg 音视频内核",
+      "version": "1.1.0",
+      "ckp": "1.0",
+      "kind": "media",
+      "description": "基于 FFmpeg 的音视频转换内核：容器/编码互转、抽取音轨、抽取视频帧为图片、视频转 GIF、缩放裁剪。项目 vendor 目录内已随 imageio-ffmpeg 附带一份完整的 FFmpeg 7.1 二进制，开箱即用；若系统 PATH 上有 ffmpeg，也可用 CKP_EXE_FFMPEG 指定。",
+      "homepage": "https://github.com/FFmpeg/FFmpeg",
+      "license": "LGPL-2.1-or-later / GPL-2.0-or-later",
+      "priority": 60,
+      "tags": [
+        "media",
+        "video",
+        "audio",
+        "ffmpeg",
+        "mp4",
+        "gif",
+        "mp3",
+        "transcode"
+      ],
+      "runtime": "python",
+      "requires": [],
+      "probe": {
+        "type": "ckp-executable",
+        "target": "ffmpeg"
+      },
+      "external": [
+        "ffmpeg"
+      ],
+      "capabilities": 4,
+      "ops": [
+        "convert",
+        "extract",
+        "transform"
+      ],
+      "path": "plugins/ffmpeg-media",
+      "size": 87691896,
+      "files": 17,
+      "vendorSize": 87682716,
+      "sha256": "4c8591122e0853ce172ae6b696d25ac1a3abc7bb8a9b2fea8028c1bd69d48fe4"
+    },
+    {
+      "id": "ghostscript-pdf",
+      "name": "Ghostscript PDF/PS 内核",
+      "version": "1.0.0",
+      "ckp": "1.0",
+      "kind": "document",
+      "description": "老牌 PostScript/PDF 解释器 Ghostscript：PDF/PS/EPS 转图片、PDF 压缩瘦身、PDF 版本降级、PDF 合并。安装后本内核自动点亮。",
+      "homepage": "https://github.com/ArtifexSoftware/ghostpdl",
+      "license": "AGPL-3.0",
+      "priority": 55,
+      "tags": [
+        "pdf",
+        "postscript",
+        "ghostscript",
+        "gs",
+        "raster",
+        "compress",
+        "cli"
+      ],
+      "runtime": "python",
+      "requires": [],
+      "probe": {
+        "type": "ckp-executable",
+        "target": "gs"
+      },
+      "external": [
+        "gswin64c"
+      ],
+      "capabilities": 3,
+      "ops": [
+        "convert",
+        "optimize",
+        "render"
+      ],
+      "path": "plugins/ghostscript-pdf",
+      "size": 5979,
+      "files": 2,
+      "vendorSize": 0,
+      "sha256": "523007595a6cfbae7d743ebe81eb55ec07fb9a4bd61bb6691b34fcb5b134cf4f"
+    },
+    {
+      "id": "graphicsmagick",
+      "name": "GraphicsMagick 图像内核",
+      "version": "1.0.0",
+      "ckp": "1.0",
+      "kind": "image",
+      "description": "从 ImageMagick 分叉出来的 GraphicsMagick，以更小体积、更快速度和更稳定的 API 著称，是许多后端批处理流水线的选择。安装后本内核自动点亮。",
+      "homepage": "https://github.com/GraphicsMagick/GraphicsMagick",
+      "license": "MIT-style (GraphicsMagick License)",
+      "priority": 58,
+      "tags": [
+        "image",
+        "graphicsmagick",
+        "gm",
+        "raster",
+        "batch",
+        "cli"
+      ],
+      "runtime": "python",
+      "requires": [],
+      "probe": {
+        "type": "ckp-executable",
+        "target": "gm"
+      },
+      "external": [
+        "gm"
+      ],
+      "capabilities": 3,
+      "ops": [
+        "convert",
+        "optimize",
+        "transform"
+      ],
+      "path": "plugins/graphicsmagick",
+      "size": 5896,
+      "files": 2,
+      "vendorSize": 0,
+      "sha256": "50cfc9201b971b408b6ef2aa81a7bba9f473f00afa9c5b4644448232480bc030"
+    },
+    {
+      "id": "imagemagick",
+      "name": "ImageMagick 图像内核",
+      "version": "1.0.0",
+      "ckp": "1.0",
+      "kind": "image",
+      "description": "业界最经典的开源图像处理套件 ImageMagick：200+ 种位图/矢量格式互转、缩放、裁剪、旋转、加水印、色彩调整、批量优化。安装后本内核自动点亮。",
+      "homepage": "https://github.com/ImageMagick/ImageMagick",
+      "license": "ImageMagick License (Apache-2.0 风格)",
+      "priority": 65,
+      "tags": [
+        "image",
+        "imagemagick",
+        "magick",
+        "convert",
+        "raster",
+        "cli"
+      ],
+      "runtime": "python",
+      "requires": [],
+      "probe": {
+        "type": "ckp-executable",
+        "target": "magick"
+      },
+      "external": [
+        "magick"
+      ],
+      "capabilities": 3,
+      "ops": [
+        "convert",
+        "optimize",
+        "transform"
+      ],
+      "path": "plugins/imagemagick",
+      "size": 5974,
+      "files": 2,
+      "vendorSize": 0,
+      "sha256": "d91ceb8fe07f266bec57adef0cebdbd4df1877b7b0f00a8457b616f6a577899a"
+    },
+    {
+      "id": "inkscape-vector",
+      "name": "Inkscape 矢量内核",
+      "version": "1.0.0",
+      "ckp": "1.0",
+      "kind": "vector",
+      "description": "专业开源矢量编辑器的命令行模式：SVG/SVGZ 与 PDF/EPS/PNG 互转，可指定导出 DPI、背景色与透明背景。安装后本内核自动点亮。",
+      "homepage": "https://gitlab.com/inkscape/inkscape",
+      "license": "GPL-2.0-or-later",
+      "priority": 65,
+      "tags": [
+        "vector",
+        "svg",
+        "inkscape",
+        "pdf",
+        "eps",
+        "png",
+        "render",
+        "cli"
+      ],
+      "runtime": "python",
+      "requires": [],
+      "probe": {
+        "type": "ckp-executable",
+        "target": "inkscape"
+      },
+      "external": [
+        "inkscape"
+      ],
+      "capabilities": 2,
+      "ops": [
+        "convert",
+        "render"
+      ],
+      "path": "plugins/inkscape-vector",
+      "size": 4174,
+      "files": 2,
+      "vendorSize": 0,
+      "sha256": "c743db6d2d702fc64835df4da59d9af4b64868e1ede7413a35aa0fedce4db3c9"
+    },
+    {
+      "id": "libreoffice-office",
+      "name": "LibreOffice 办公文档内核",
+      "version": "1.0.0",
+      "ckp": "1.0",
+      "kind": "document",
+      "description": "用 LibreOffice 的无头模式做真正的 Office 文档转换：DOCX/XLSX/PPTX/ODT/ODS/ODP 与 PDF、HTML、CSV、TXT 等互转，且能最大程度保持原排版。安装后本内核自动点亮。",
+      "homepage": "https://github.com/LibreOffice/core",
+      "license": "MPL-2.0",
+      "priority": 62,
+      "tags": [
+        "document",
+        "office",
+        "docx",
+        "xlsx",
+        "pptx",
+        "pdf",
+        "libreoffice",
+        "soffice",
+        "cli"
+      ],
+      "runtime": "python",
+      "requires": [],
+      "probe": {
+        "type": "ckp-executable",
+        "target": "soffice"
+      },
+      "external": [
+        "soffice"
+      ],
+      "capabilities": 1,
+      "ops": [
+        "convert"
+      ],
+      "path": "plugins/libreoffice-office",
+      "size": 3459,
+      "files": 2,
+      "vendorSize": 0,
+      "sha256": "a038fd62e5ede0260c3e7e4af96c8dea28cafde93c10baff5d1f47d535349b6f"
+    },
+    {
+      "id": "libvips-image",
+      "name": "libvips 高性能图像内核",
+      "version": "1.0.0",
+      "ckp": "1.0",
+      "kind": "image",
+      "description": "以极低内存占用著称的高性能图像库 libvips：超大图（几十亿像素）转换与缩略图生成的首选。安装 vips 命令行后本内核自动点亮。",
+      "homepage": "https://github.com/libvips/libvips",
+      "license": "LGPL-2.1-or-later",
+      "priority": 60,
+      "tags": [
+        "image",
+        "vips",
+        "libvips",
+        "thumbnail",
+        "performance",
+        "large-image",
+        "cli"
+      ],
+      "runtime": "python",
+      "requires": [],
+      "probe": {
+        "type": "ckp-executable",
+        "target": "vips"
+      },
+      "external": [
+        "vips"
+      ],
+      "capabilities": 4,
+      "ops": [
+        "convert",
+        "optimize",
+        "render",
+        "transform"
+      ],
+      "path": "plugins/libvips-image",
+      "size": 4622,
+      "files": 2,
+      "vendorSize": 0,
+      "sha256": "3a997a3b40d5b89c0363c407a83801dd7e1ec3a76bf0883a091225a3a602dd05"
+    },
+    {
+      "id": "office-text",
+      "name": "Office 文档抽取内核",
+      "version": "1.0.0",
+      "ckp": "1.0",
+      "kind": "document",
+      "description": "把 DOCX / XLSX / PPTX 抽取成文本、Markdown、HTML、CSV、JSON，**不需要安装 Office 或 LibreOffice**。DOCX 保留标题层级与表格，XLSX 逐表导出，PPTX 按页导出标题/正文/备注。",
+      "homepage": "https://github.com/python-openxml/python-docx",
+      "license": "MIT",
+      "priority": 52,
+      "tags": [
+        "office",
+        "docx",
+        "xlsx",
+        "pptx",
+        "word",
+        "excel",
+        "powerpoint",
+        "extract",
+        "python"
+      ],
+      "runtime": "python",
+      "requires": [],
+      "probe": {
+        "type": "none",
+        "target": ""
+      },
+      "external": [],
+      "capabilities": 4,
+      "ops": [
+        "convert",
+        "extract"
+      ],
+      "path": "plugins/office-text",
+      "size": 28625426,
+      "files": 808,
+      "vendorSize": 28611069,
+      "sha256": "ec9babfabc58d6260191ae653cf79399091b80893a304ef6c86653a1fd7dab16"
+    },
+    {
+      "id": "pandoc-document",
+      "name": "Pandoc 文档内核",
+      "version": "1.0.0",
+      "ckp": "1.0",
+      "kind": "document",
+      "description": "「文档转换界的瑞士军刀」Pandoc：Markdown / HTML / DOCX / ODT / LaTeX / EPUB / reStructuredText / MediaWiki 等几十种标记与文档格式互转。安装后本内核自动点亮。",
+      "homepage": "https://github.com/jgm/pandoc",
+      "license": "GPL-2.0-or-later",
+      "priority": 70,
+      "tags": [
+        "document",
+        "pandoc",
+        "markdown",
+        "docx",
+        "html",
+        "latex",
+        "epub",
+        "pdf",
+        "cli"
+      ],
+      "runtime": "python",
+      "requires": [],
+      "probe": {
+        "type": "ckp-executable",
+        "target": "pandoc"
+      },
+      "external": [
+        "pandoc"
+      ],
+      "capabilities": 1,
+      "ops": [
+        "convert"
+      ],
+      "path": "plugins/pandoc-document",
+      "size": 4689,
+      "files": 2,
+      "vendorSize": 0,
+      "sha256": "1252d1bdf115e3ba3dec9e2c3cfe5f734e8f80ee7651fe1558a3c3f8fec9b1f2"
+    },
+    {
+      "id": "pillow-image",
+      "name": "Pillow 图像内核",
+      "version": "1.2.0",
+      "ckp": "1.0",
+      "kind": "image",
+      "description": "基于 Python Pillow 的全能位图内核：PNG/JPG/WEBP/AVIF/TIFF/GIF/BMP/ICO/HEIC 等广泛互转，并支持缩放、旋转、翻转、裁剪、灰度、去元数据等变换。",
+      "homepage": "https://github.com/python-pillow/Pillow",
+      "license": "MIT-CMU",
+      "priority": 70,
+      "tags": [
+        "image",
+        "raster",
+        "png",
+        "jpg",
+        "webp",
+        "avif",
+        "heif",
+        "tiff",
+        "gif",
+        "ico"
+      ],
+      "runtime": "python",
+      "requires": [
+        "PIL"
+      ],
+      "probe": {
+        "type": "python-import",
+        "target": "PIL"
+      },
+      "external": [],
+      "capabilities": 4,
+      "ops": [
+        "convert",
+        "inspect",
+        "optimize",
+        "transform"
+      ],
+      "path": "plugins/pillow-image",
+      "size": 43626278,
+      "files": 152,
+      "vendorSize": 43604635,
+      "sha256": "2c7c2d1de26512687cac79304dbaaf73eca9fb273165419f0272840792c98127"
+    },
+    {
+      "id": "poppler-pdf",
+      "name": "Poppler PDF 工具内核",
+      "version": "1.0.0",
+      "ckp": "1.0",
+      "kind": "document",
+      "description": "Poppler 命令行工具集：pdftoppm 把 PDF 逐页渲染成 PNG/JPEG/TIFF，pdftotext 抽取文本（保留版式或纯文本）。安装后本内核自动点亮。",
+      "homepage": "https://gitlab.freedesktop.org/poppler/poppler",
+      "license": "GPL-2.0-or-later",
+      "priority": 60,
+      "tags": [
+        "pdf",
+        "poppler",
+        "pdftoppm",
+        "pdftotext",
+        "render",
+        "extract",
+        "cli"
+      ],
+      "runtime": "python",
+      "requires": [],
+      "probe": {
+        "type": "ckp-executable",
+        "target": "pdftoppm"
+      },
+      "external": [
+        "pdftoppm",
+        "pdftotext"
+      ],
+      "capabilities": 2,
+      "ops": [
+        "extract",
+        "render"
+      ],
+      "path": "plugins/poppler-pdf",
+      "size": 4638,
+      "files": 2,
+      "vendorSize": 0,
+      "sha256": "694551f62857419c69713d90d0d5c3b77ce1c8b90e387bc8f53c9644dacfd80c"
+    },
+    {
+      "id": "pymupdf-pdf",
+      "name": "PyMuPDF (MuPDF) PDF 内核",
+      "version": "1.1.0",
+      "ckp": "1.0",
+      "kind": "document",
+      "description": "纯 Python 的 PDF 全能内核（PyMuPDF/MuPDF）：PDF 逐页渲染成图片、抽取文本/HTML/JSON、抽取内嵌图片、多图合成 PDF、多 PDF 合并、按页拆分、无损瘦身、读取元信息。无外部二进制依赖。",
+      "homepage": "https://github.com/pymupdf/PyMuPDF",
+      "license": "AGPL-3.0",
+      "priority": 72,
+      "tags": [
+        "pdf",
+        "pymupdf",
+        "mupdf",
+        "render",
+        "extract",
+        "merge",
+        "split",
+        "text",
+        "python"
+      ],
+      "runtime": "python",
+      "requires": [
+        "pymupdf"
+      ],
+      "probe": {
+        "type": "python-import",
+        "target": "pymupdf"
+      },
+      "external": [],
+      "capabilities": 8,
+      "ops": [
+        "convert",
+        "extract",
+        "inspect",
+        "merge",
+        "optimize",
+        "render",
+        "split"
+      ],
+      "path": "plugins/pymupdf-pdf",
+      "size": 65164447,
+      "files": 245,
+      "vendorSize": 65146483,
+      "sha256": "9067ef2da61e4fb8cdc843ae89684de7f29d91fa800ad74e6be0ed9617498b06"
+    },
+    {
+      "id": "qpdf-pdf",
+      "name": "QPDF 结构内核",
+      "version": "1.0.0",
+      "ckp": "1.0",
+      "kind": "document",
+      "description": "专注于 PDF 内部结构的 qpdf：线性化（优化 Web 打开速度）、加解密、页面拆分与合并、结构重整。无损处理，不改动页面内容。安装后本内核自动点亮。",
+      "homepage": "https://github.com/qpdf/qpdf",
+      "license": "Apache-2.0",
+      "priority": 50,
+      "tags": [
+        "pdf",
+        "qpdf",
+        "linearize",
+        "encrypt",
+        "decrypt",
+        "split",
+        "merge",
+        "cli"
+      ],
+      "runtime": "python",
+      "requires": [],
+      "probe": {
+        "type": "ckp-executable",
+        "target": "qpdf"
+      },
+      "external": [
+        "qpdf"
+      ],
+      "capabilities": 6,
+      "ops": [
+        "convert",
+        "decrypt",
+        "encrypt",
+        "inspect",
+        "optimize",
+        "split"
+      ],
+      "path": "plugins/qpdf-pdf",
+      "size": 4609,
+      "files": 2,
+      "vendorSize": 0,
+      "sha256": "c7df3f81145f9cf52414338b8c5321b36367acf2dd66388e4c263791f5245175"
+    },
+    {
+      "id": "sevenzip-archive",
+      "name": "7-Zip 归档内核",
+      "version": "1.0.0",
+      "ckp": "1.0",
+      "kind": "archive",
+      "description": "7-Zip 命令行：把任意文件/目录打包成 zip / 7z / tar / gzip，或解开常见压缩包。安装 7-Zip 后本内核自动点亮。",
+      "homepage": "https://github.com/ip7z/7zip",
+      "license": "LGPL-2.1-or-later",
+      "priority": 45,
+      "tags": [
+        "archive",
+        "zip",
+        "7z",
+        "tar",
+        "gzip",
+        "compress",
+        "extract",
+        "cli"
+      ],
+      "runtime": "python",
+      "requires": [],
+      "probe": {
+        "type": "ckp-executable",
+        "target": "7z"
+      },
+      "external": [
+        "7z"
+      ],
+      "capabilities": 2,
+      "ops": [
+        "package",
+        "unpack"
+      ],
+      "path": "plugins/sevenzip-archive",
+      "size": 3815,
+      "files": 2,
+      "vendorSize": 0,
+      "sha256": "7387b9ecf8642739b365e6df267d82b30ccf995f0faea76ea20c380fa7d4030e"
+    },
+    {
+      "id": "stdlib-image",
+      "name": "纯标准库图像内核（兜底）",
+      "version": "1.1.0",
+      "ckp": "1.0",
+      "kind": "image",
+      "description": "KernelHub 自造的零依赖兜底内核：仅用 Python 标准库（zlib/struct）实现 PNG / BMP / Netpbm / TGA 的读写互转。任何机器上都能跑，不需要安装任何东西。",
+      "homepage": "https://github.com/",
+      "license": "MIT",
+      "priority": 20,
+      "tags": [
+        "image",
+        "fallback",
+        "zero-dependency",
+        "png",
+        "bmp",
+        "ppm",
+        "tga",
+        "stdlib"
+      ],
+      "runtime": "python",
+      "requires": [],
+      "probe": {
+        "type": "none",
+        "target": ""
+      },
+      "external": [],
+      "capabilities": 2,
+      "ops": [
+        "convert",
+        "transform"
+      ],
+      "path": "plugins/stdlib-image",
+      "size": 33656,
+      "files": 3,
+      "vendorSize": 0,
+      "sha256": "8935012bbce699e282f55c5fcdd856e45b9d3850758da1caa73a64d6c58a7072"
+    },
+    {
+      "id": "svg-vector",
+      "name": "SVG 矢量内核（纯 Python）",
+      "version": "1.0.0",
+      "ckp": "1.0",
+      "kind": "vector",
+      "description": "把 SVG 渲染成 PDF / PNG / JPG 的纯 Python 内核（svglib + reportlab，位图由 PyMuPDF 兜底光栅化），无需安装 Inkscape 等外部程序。仅支持 SVG 1.1 核心子集：不支持 CSS 样式表、滤镜与动画，复杂 SVG 建议安装 Inkscape（本平台会自动优先使用）。",
+      "homepage": "https://github.com/deeplook/svglib",
+      "license": "LGPL-3.0",
+      "priority": 35,
+      "tags": [
+        "vector",
+        "svg",
+        "pdf",
+        "png",
+        "render",
+        "python",
+        "no-binary"
+      ],
+      "runtime": "python",
+      "requires": [
+        "svglib"
+      ],
+      "probe": {
+        "type": "python-import",
+        "target": "svglib"
+      },
+      "external": [],
+      "capabilities": 2,
+      "ops": [
+        "convert",
+        "render"
+      ],
+      "path": "plugins/svg-vector",
+      "size": 79835031,
+      "files": 688,
+      "vendorSize": 79826194,
+      "sha256": "019e2ac6aa0024cc83cb9391bfeb86b05b4664115ae113eea30e2bc154e64845"
+    },
+    {
+      "id": "text-markup",
+      "name": "文本 / 标记语言内核",
+      "version": "1.0.0",
+      "ckp": "1.0",
+      "kind": "data",
+      "description": "Markdown ⇄ HTML ⇄ 纯文本 互转：Markdown 渲染成带样式的 HTML（支持表格、代码块、目录），HTML 反向抽取为 Markdown 或纯文本，纯文本升格为 Markdown 或 HTML。完全离线，无外部程序依赖。",
+      "homepage": "https://github.com/Python-Markdown/markdown",
+      "license": "BSD-3-Clause",
+      "priority": 55,
+      "tags": [
+        "text",
+        "markdown",
+        "html",
+        "txt",
+        "document",
+        "python"
+      ],
+      "runtime": "python",
+      "requires": [],
+      "probe": {
+        "type": "none",
+        "target": ""
+      },
+      "external": [],
+      "capabilities": 1,
+      "ops": [
+        "convert"
+      ],
+      "path": "plugins/text-markup",
+      "size": 466061,
+      "files": 61,
+      "vendorSize": 455267,
+      "sha256": "5ad62d0e5c95f41aad678bc1a8035c82359daa986e233bde7be4ead7ca0f1306"
+    },
+    {
+      "id": "windows-wic",
+      "name": "Windows GDI+/WIC 图像内核（零依赖）",
+      "version": "1.0.0",
+      "ckp": "1.0",
+      "kind": "image",
+      "description": "KernelHub 自造的 Windows 原生兜底内核：直接用系统自带的 System.Drawing（GDI+/WIC）完成 PNG / JPEG / BMP / GIF / TIFF / ICO 互转与缩放旋转。不需要安装任何第三方组件，也不需要 Python 图像库。",
+      "homepage": "https://learn.microsoft.com/dotnet/api/system.drawing",
+      "license": "MIT",
+      "priority": 30,
+      "tags": [
+        "image",
+        "windows",
+        "gdi+",
+        "wic",
+        "fallback",
+        "zero-dependency",
+        "powershell"
+      ],
+      "runtime": "powershell",
+      "requires": [],
+      "probe": {
+        "type": "command",
+        "target": "powershell"
+      },
+      "external": [
+        "powershell"
+      ],
+      "capabilities": 2,
+      "ops": [
+        "convert",
+        "transform"
+      ],
+      "path": "plugins/windows-wic",
+      "size": 16544,
+      "files": 2,
+      "vendorSize": 0,
+      "sha256": "bcfa72a3db00d040f3b49fc3db9a65838c8a5ee9d07e55a657645056f5d7e207"
+    }
+  ]
+}

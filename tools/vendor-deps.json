@@ -1,0 +1,353 @@
+﻿{
+    "plugins":  [
+                    {
+                        "id":  "data-table",
+                        "directDists":  [
+                                            "openpyxl-3.1.5"
+                                        ],
+                        "allDists":  [
+                                         "et_xmlfile-2.0.0",
+                                         "openpyxl-3.1.5"
+                                     ],
+                        "transitive":  [
+                                           "et_xmlfile-2.0.0 \u003c- openpyxl-3.1.5"
+                                       ],
+                        "files":  208,
+                        "mb":  0.89
+                    },
+                    {
+                        "id":  "ffmpeg-media",
+                        "directDists":  [
+                                            "imageio_ffmpeg-0.6.0"
+                                        ],
+                        "allDists":  [
+                                         "imageio_ffmpeg-0.6.0"
+                                     ],
+                        "transitive":  [
+
+                                       ],
+                        "files":  15,
+                        "mb":  83.62
+                    },
+                    {
+                        "id":  "ghostscript-pdf",
+                        "directDists":  [
+
+                                        ],
+                        "allDists":  [
+
+                                     ],
+                        "transitive":  [
+
+                                       ],
+                        "files":  0,
+                        "mb":  0
+                    },
+                    {
+                        "id":  "graphicsmagick",
+                        "directDists":  [
+
+                                        ],
+                        "allDists":  [
+
+                                     ],
+                        "transitive":  [
+
+                                       ],
+                        "files":  0,
+                        "mb":  0
+                    },
+                    {
+                        "id":  "imagemagick",
+                        "directDists":  [
+
+                                        ],
+                        "allDists":  [
+
+                                     ],
+                        "transitive":  [
+
+                                       ],
+                        "files":  0,
+                        "mb":  0
+                    },
+                    {
+                        "id":  "inkscape-vector",
+                        "directDists":  [
+
+                                        ],
+                        "allDists":  [
+
+                                     ],
+                        "transitive":  [
+
+                                       ],
+                        "files":  0,
+                        "mb":  0
+                    },
+                    {
+                        "id":  "libreoffice-office",
+                        "directDists":  [
+
+                                        ],
+                        "allDists":  [
+
+                                     ],
+                        "transitive":  [
+
+                                       ],
+                        "files":  0,
+                        "mb":  0
+                    },
+                    {
+                        "id":  "libvips-image",
+                        "directDists":  [
+
+                                        ],
+                        "allDists":  [
+
+                                     ],
+                        "transitive":  [
+
+                                       ],
+                        "files":  0,
+                        "mb":  0
+                    },
+                    {
+                        "id":  "office-text",
+                        "directDists":  [
+                                            "openpyxl-3.1.5",
+                                            "python_docx-1.2.0",
+                                            "python_pptx-1.0.2"
+                                        ],
+                        "allDists":  [
+                                         "et_xmlfile-2.0.0",
+                                         "lxml-6.1.3",
+                                         "openpyxl-3.1.5",
+                                         "pillow-12.3.0",
+                                         "python_docx-1.2.0",
+                                         "python_pptx-1.0.2",
+                                         "typing_extensions-4.16.0",
+                                         "xlsxwriter-3.2.9"
+                                     ],
+                        "transitive":  [
+                                           "et_xmlfile-2.0.0 \u003c- openpyxl-3.1.5",
+                                           "lxml-6.1.3 \u003c- python_pptx-1.0.2",
+                                           "pillow-12.3.0 \u003c- python_pptx-1.0.2",
+                                           "typing_extensions-4.16.0 \u003c- python_pptx-1.0.2",
+                                           "xlsxwriter-3.2.9 \u003c- python_pptx-1.0.2"
+                                       ],
+                        "files":  806,
+                        "mb":  27.29
+                    },
+                    {
+                        "id":  "pandoc-document",
+                        "directDists":  [
+
+                                        ],
+                        "allDists":  [
+
+                                     ],
+                        "transitive":  [
+
+                                       ],
+                        "files":  0,
+                        "mb":  0
+                    },
+                    {
+                        "id":  "pillow-image",
+                        "directDists":  [
+                                            "pillow-12.3.0",
+                                            "pillow_heif-1.8.0"
+                                        ],
+                        "allDists":  [
+                                         "pillow-12.3.0",
+                                         "pillow_heif-1.8.0"
+                                     ],
+                        "transitive":  [
+
+                                       ],
+                        "files":  150,
+                        "mb":  41.58
+                    },
+                    {
+                        "id":  "poppler-pdf",
+                        "directDists":  [
+
+                                        ],
+                        "allDists":  [
+
+                                     ],
+                        "transitive":  [
+
+                                       ],
+                        "files":  0,
+                        "mb":  0
+                    },
+                    {
+                        "id":  "pymupdf-pdf",
+                        "directDists":  [
+                                            "pillow-12.3.0",
+                                            "pymupdf-1.28.2"
+                                        ],
+                        "allDists":  [
+                                         "pillow-12.3.0",
+                                         "pymupdf-1.28.2"
+                                     ],
+                        "transitive":  [
+
+                                       ],
+                        "files":  243,
+                        "mb":  62.13
+                    },
+                    {
+                        "id":  "qpdf-pdf",
+                        "directDists":  [
+
+                                        ],
+                        "allDists":  [
+
+                                     ],
+                        "transitive":  [
+
+                                       ],
+                        "files":  0,
+                        "mb":  0
+                    },
+                    {
+                        "id":  "sevenzip-archive",
+                        "directDists":  [
+
+                                        ],
+                        "allDists":  [
+
+                                     ],
+                        "transitive":  [
+
+                                       ],
+                        "files":  0,
+                        "mb":  0
+                    },
+                    {
+                        "id":  "stdlib-image",
+                        "directDists":  [
+
+                                        ],
+                        "allDists":  [
+
+                                     ],
+                        "transitive":  [
+
+                                       ],
+                        "files":  0,
+                        "mb":  0
+                    },
+                    {
+                        "id":  "svg-vector",
+                        "directDists":  [
+                                            "pillow-12.3.0",
+                                            "pymupdf-1.28.2",
+                                            "reportlab-5.0.1",
+                                            "svglib-2.3.0"
+                                        ],
+                        "allDists":  [
+                                         "charset_normalizer-3.5.2",
+                                         "cssselect2-0.10.1",
+                                         "lxml-6.1.3",
+                                         "pillow-12.3.0",
+                                         "pymupdf-1.28.2",
+                                         "reportlab-5.0.1",
+                                         "svglib-2.3.0",
+                                         "tinycss2-1.5.1",
+                                         "webencodings-0.6.1"
+                                     ],
+                        "transitive":  [
+                                           "charset_normalizer-3.5.2 \u003c- reportlab-5.0.1",
+                                           "cssselect2-0.10.1 \u003c- svglib-2.3.0",
+                                           "lxml-6.1.3 \u003c- svglib-2.3.0",
+                                           "tinycss2-1.5.1 \u003c- svglib-2.3.0",
+                                           "webencodings-0.6.1 \u003c- tinycss2-1.5.1"
+                                       ],
+                        "files":  686,
+                        "mb":  76.13
+                    },
+                    {
+                        "id":  "text-markup",
+                        "directDists":  [
+                                            "html2text-2025.4.15",
+                                            "markdown-3.11"
+                                        ],
+                        "allDists":  [
+                                         "html2text-2025.4.15",
+                                         "markdown-3.11"
+                                     ],
+                        "transitive":  [
+
+                                       ],
+                        "files":  59,
+                        "mb":  0.43
+                    },
+                    {
+                        "id":  "windows-wic",
+                        "directDists":  [
+
+                                        ],
+                        "allDists":  [
+
+                                     ],
+                        "transitive":  [
+
+                                       ],
+                        "files":  0,
+                        "mb":  0
+                    }
+                ],
+    "unusedDists":  [
+                        "pypdf-6.19.0"
+                    ],
+    "rootFilesOwner":  [
+                           {
+                               "file":  "libde265-0-863aced21c291386b51bbbd6c57331e8.dll",
+                               "owner":  "pillow_heif-1.8.0"
+                           },
+                           {
+                               "file":  "libgcc_s_seh-1-7579db3ccd9543f896752ed45d8cb013.dll",
+                               "owner":  "pillow_heif-1.8.0"
+                           },
+                           {
+                               "file":  "libheif-30fc1b3ceee9088934615cbf4948eba3.dll",
+                               "owner":  "pillow_heif-1.8.0"
+                           },
+                           {
+                               "file":  "libstdc++-6-a168feb806be6a6b9920422b91e14e6f.dll",
+                               "owner":  "pillow_heif-1.8.0"
+                           },
+                           {
+                               "file":  "libwinpthread-1-cd4f4bcf906810bdc5341685d1696fa6.dll",
+                               "owner":  "pillow_heif-1.8.0"
+                           },
+                           {
+                               "file":  "libx265-217-8a7f7f4ebe0ffaa73ce4bb306c2d18d6.dll",
+                               "owner":  "pillow_heif-1.8.0"
+                           },
+                           {
+                               "file":  "typing_extensions.py",
+                               "owner":  "typing_extensions-4.16.0"
+                           },
+                           {
+                               "file":  "_pillow_heif.cp314-win_amd64.pyd",
+                               "owner":  "pillow_heif-1.8.0"
+                           }
+                       ],
+    "unresolved":  [
+                       {
+                           "id":  "libreoffice-office",
+                           "unresolved":  [
+                                              {
+                                                  "module":  "libreoffice",
+                                                  "where":  "kernel.json: x-cli.executables.soffice.bundled"
+                                              }
+                                          ]
+                       }
+                   ]
+}

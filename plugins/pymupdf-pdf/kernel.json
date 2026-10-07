@@ -1,0 +1,104 @@
+{
+  "ckp": "1.0",
+  "id": "pymupdf-pdf",
+  "name": "PyMuPDF (MuPDF) PDF 内核",
+  "version": "1.1.0",
+  "kind": "document",
+  "description": "纯 Python 的 PDF 全能内核（PyMuPDF/MuPDF）：PDF 逐页渲染成图片、抽取文本/HTML/JSON、抽取内嵌图片、多图合成 PDF、多 PDF 合并、按页拆分、无损瘦身、读取元信息。无外部二进制依赖。",
+  "homepage": "https://github.com/pymupdf/PyMuPDF",
+  "license": "AGPL-3.0",
+  "priority": 72,
+  "tags": ["pdf", "pymupdf", "mupdf", "render", "extract", "merge", "split", "text", "python"],
+  "runtime": {
+    "type": "python",
+    "entry": "adapter.py",
+    "requires": ["pymupdf"]
+  },
+  "probe": { "type": "python-import", "target": "pymupdf" },
+  "capabilities": [
+    {
+      "id": "pdf.render",
+      "op": "render",
+      "label": "PDF → 位图",
+      "from": ["pdf"],
+      "to": ["png", "jpg", "jpeg", "webp", "tif", "tiff", "bmp", "ppm"],
+      "multi_out": true,
+      "quality": 15
+    },
+    {
+      "id": "pdf.extract.text",
+      "op": "extract",
+      "label": "PDF → 文本 / HTML / JSON",
+      "from": ["pdf"],
+      "to": ["text", "txt", "md", "markdown", "html", "htm", "json", "xml"],
+      "quality": 12
+    },
+    {
+      "id": "pdf.extract.images",
+      "op": "extract",
+      "label": "PDF → 内嵌图片",
+      "from": ["pdf"],
+      "to": ["png", "jpg", "jpeg", "webp", "bmp", "tif", "tiff"],
+      "multi_out": true
+    },
+    {
+      "id": "pdf.from_images",
+      "op": "convert",
+      "label": "图片 → PDF",
+      "from": ["png", "jpg", "jpeg", "jfif", "bmp", "gif", "tif", "tiff", "webp", "avif", "ppm", "pnm"],
+      "to": ["pdf"],
+      "multi_in": true,
+      "quality": 18
+    },
+    {
+      "id": "pdf.optimize",
+      "op": "optimize",
+      "label": "PDF 无损瘦身",
+      "from": ["pdf"],
+      "to": ["pdf"]
+    },
+    {
+      "id": "pdf.merge",
+      "op": "merge",
+      "label": "PDF 合并",
+      "from": ["pdf"],
+      "to": ["pdf"],
+      "multi_in": true
+    },
+    {
+      "id": "pdf.split",
+      "op": "split",
+      "label": "PDF 拆分",
+      "from": ["pdf"],
+      "to": ["pdf"],
+      "multi_out": true
+    },
+    {
+      "id": "pdf.inspect",
+      "op": "inspect",
+      "label": "PDF 元信息",
+      "from": ["pdf"],
+      "to": ["json"]
+    }
+  ],
+  "params": [
+    { "id": "dpi", "type": "int", "label": "渲染 DPI", "default": 150,
+      "min": 36, "max": 1200, "applies_to": ["render"] },
+    { "id": "quality", "type": "int", "label": "JPEG/WebP 质量", "default": 85,
+      "min": 1, "max": 100, "when": { "to": ["jpg", "jpeg", "webp"] } },
+    { "id": "first_page", "type": "int", "label": "起始页（从 1 开始）", "default": 1,
+      "min": 1, "max": 100000 },
+    { "id": "last_page", "type": "int", "label": "结束页", "default": 0,
+      "description": "0 = 到最后一页", "min": 0, "max": 100000 },
+    { "id": "pages_per_file", "type": "int", "label": "拆分：每个文件页数",
+      "default": 1, "min": 1, "max": 10000, "applies_to": ["split"] }
+  ],
+  "hooks": {
+    "install": {
+      "type": "command", "command": "python",
+      "args": ["tools/pip_bootstrap.py", "install", "--target", "vendor", "-i",
+               "https://pypi.tuna.tsinghua.edu.cn/simple", "PyMuPDF"],
+      "description": "从 PyPI 安装 PyMuPDF 到 vendor/ 目录"
+    }
+  }
+}

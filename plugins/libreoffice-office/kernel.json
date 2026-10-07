@@ -1,0 +1,67 @@
+{
+  "ckp": "1.0",
+  "id": "libreoffice-office",
+  "name": "LibreOffice 办公文档内核",
+  "version": "1.0.0",
+  "kind": "document",
+  "description": "用 LibreOffice 的无头模式做真正的 Office 文档转换：DOCX/XLSX/PPTX/ODT/ODS/ODP 与 PDF、HTML、CSV、TXT 等互转，且能最大程度保持原排版。安装后本内核自动点亮。",
+  "homepage": "https://github.com/LibreOffice/core",
+  "license": "MPL-2.0",
+  "priority": 62,
+  "tags": ["document", "office", "docx", "xlsx", "pptx", "pdf", "libreoffice", "soffice", "cli"],
+  "runtime": { "type": "python", "entry": "adapter.py", "requires": [] },
+  "probe": { "type": "ckp-executable", "target": "soffice" },
+  "x-cli": {
+    "engine": "LibreOffice",
+    "executables": {
+      "soffice": {
+        "candidates": ["soffice", "soffice.exe", "soffice.com"],
+        "bundled": [
+          "kernels/libreoffice/program/soffice.exe",
+          "vendor/libreoffice/program/soffice.exe"
+        ],
+        "absolute": [
+          "C:/Program Files/LibreOffice/program/soffice.exe",
+          "C:/Program Files (x86)/LibreOffice/program/soffice.exe"
+        ],
+        "prefer": ["env", "bundled", "absolute", "path"]
+      }
+    },
+    "templates": [
+      {
+        "op": "convert",
+        "output_mode": "glob",
+        "output_glob": "{outdir}/{stem}.{ext}",
+        "command": "{exe:soffice}",
+        "args": ["--headless", "--norestore", "--nolockcheck", "--nodefault",
+                 "--nofirststartwizard",
+                 "-env:UserInstallation=file:///{outdir}/.lo-profile",
+                 "--convert-to", "{param:filter|{ext}}", "--outdir", "{outdir}", "{input}"]
+      }
+    ]
+  },
+  "capabilities": [
+    {
+      "id": "libreoffice.convert",
+      "op": "convert",
+      "label": "LibreOffice 文档转换",
+      "from": ["doc", "docx", "odt", "rtf", "txt", "text", "html", "htm", "xls", "xlsx",
+               "ods", "csv", "ppt", "pptx", "odp", "pdf", "epub", "fodt", "fods",
+               "fodp", "wps", "wpd", "sxw", "sxc", "sxi"],
+      "to": ["pdf", "docx", "odt", "rtf", "txt", "text", "html", "xlsx", "ods", "csv",
+             "pptx", "odp", "epub", "png", "jpg", "jpeg", "fodt", "fods", "fodp"]
+    }
+  ],
+  "params": [
+    { "id": "filter", "type": "string", "label": "转换过滤器",
+      "description": "留空则按目标扩展名自动选择；例如 pdf:writer_pdf_Export、csv:Text - txt - csv (StarCalc)",
+      "default": "", "advanced": true }
+  ],
+  "hooks": {
+    "install": {
+      "type": "command", "command": "winget",
+      "args": ["install", "-e", "--id", "TheDocumentFoundation.LibreOffice"],
+      "description": "用 winget 安装 LibreOffice（约 350MB）"
+    }
+  }
+}

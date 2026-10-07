@@ -1,0 +1,123 @@
+{
+  "ckp": "1.0",
+  "id": "graphicsmagick",
+  "name": "GraphicsMagick 图像内核",
+  "version": "1.0.0",
+  "kind": "image",
+  "description": "从 ImageMagick 分叉出来的 GraphicsMagick，以更小体积、更快速度和更稳定的 API 著称，是许多后端批处理流水线的选择。安装后本内核自动点亮。",
+  "homepage": "https://github.com/GraphicsMagick/GraphicsMagick",
+  "license": "MIT-style (GraphicsMagick License)",
+  "priority": 58,
+  "tags": ["image", "graphicsmagick", "gm", "raster", "batch", "cli"],
+  "runtime": { "type": "python", "entry": "adapter.py", "requires": [] },
+  "probe": { "type": "ckp-executable", "target": "gm" },
+  "x-cli": {
+    "engine": "GraphicsMagick",
+    "executables": {
+      "gm": {
+        "candidates": ["gm", "gm.exe"],
+        "absolute": [
+          "C:/Program Files/GraphicsMagick-1.3.45-Q16/gm.exe",
+          "C:/Program Files/GraphicsMagick/gm.exe"
+        ],
+        "prefer": ["env", "path", "absolute"]
+      }
+    },
+    "templates": [
+      {
+        "op": "convert",
+        "command": "{exe:gm}",
+        "args": ["convert", "{input}", "-auto-orient"],
+        "optional_args": [
+          { "flag": "-resize", "value": "{param:resize_geometry|}" },
+          { "flag": "-background", "value": "{param:background|}" },
+          { "flag": "-flatten", "value": "{param:flatten_true|}" },
+          { "flag": "-quality", "value": "{param:quality|}" },
+          { "flag": "-strip", "value": "{param:strip_true|}" }
+        ],
+        "tail_args": ["{output}"]
+      },
+      {
+        "op": "transform",
+        "command": "{exe:gm}",
+        "args": ["convert", "{input}"],
+        "optional_args": [
+          { "flag": "-resize", "value": "{param:resize_geometry|}" },
+          { "flag": "-rotate", "value": "{param:rotate_angle|}" },
+          { "flag": "-crop", "value": "{param:crop_geometry|}" },
+          { "flag": "-colorspace", "value": "{param:colorspace|}" }
+        ],
+        "tail_args": ["{output}"]
+      },
+      {
+        "op": "optimize",
+        "command": "{exe:gm}",
+        "args": ["convert", "{input}", "-strip"],
+        "optional_args": [{ "flag": "-quality", "value": "{param:quality|}" }],
+        "tail_args": ["{output}"]
+      }
+    ]
+  },
+  "capabilities": [
+    {
+      "id": "gm.convert",
+      "op": "convert",
+      "label": "GraphicsMagick 格式转换",
+      "from": ["png", "jpg", "jpeg", "jfif", "gif", "bmp", "tif", "tiff", "webp", "jp2",
+               "ico", "psd", "pdf", "eps", "svg", "tga", "pcx", "dds", "exr", "hdr",
+               "xpm", "xbm", "pnm", "ppm", "pgm", "pbm", "dpx", "fits", "miff", "qoi",
+               "sgi", "sun", "wbmp", "wpg", "wmf", "emf", "avif", "heif"],
+      "to": ["png", "jpg", "jpeg", "gif", "bmp", "tif", "tiff", "webp", "jp2", "ico",
+             "psd", "pdf", "eps", "svg", "tga", "pcx", "dds", "exr", "hdr", "xpm",
+             "xbm", "pnm", "ppm", "pgm", "pbm", "dpx", "fits", "miff", "qoi", "sgi",
+             "sun", "wbmp", "wpg"]
+    },
+    {
+      "id": "gm.transform",
+      "op": "transform",
+      "label": "GraphicsMagick 图像变换",
+      "from": ["*"],
+      "to": ["*"]
+    },
+    {
+      "id": "gm.optimize",
+      "op": "optimize",
+      "label": "GraphicsMagick 压缩优化",
+      "from": ["png", "jpg", "jpeg", "gif", "webp", "tif", "tiff"],
+      "to": ["png", "jpg", "jpeg", "gif", "webp", "tif", "tiff"]
+    }
+  ],
+  "params": [
+    { "id": "quality", "type": "int", "label": "编码质量", "default": 88,
+      "min": 1, "max": 100,
+      "when": { "to": ["jpg", "jpeg", "webp", "heic", "avif", "jp2"] } },
+    { "id": "resize_geometry", "type": "string", "label": "缩放几何",
+      "description": "例如 800x600、50%、800x600^", "default": "" },
+    { "id": "background", "type": "color", "label": "背景色", "default": "#FFFFFF",
+      "when": { "to": ["jpg", "jpeg", "bmp", "pdf"] } },
+    { "id": "flatten_true", "type": "string", "label": "压平透明通道",
+      "description": "填 true 则执行 -flatten", "default": "", "advanced": true,
+      "when": { "to": ["jpg", "jpeg", "bmp"] } },
+    { "id": "strip_true", "type": "string", "label": "剥离元数据",
+      "description": "填 true 则执行 -strip", "default": "", "advanced": true },
+    { "id": "rotate_angle", "type": "string", "label": "旋转角度",
+      "default": "", "applies_to": ["transform"] },
+    { "id": "crop_geometry", "type": "string", "label": "裁剪几何",
+      "description": "例如 400x300+50+50", "default": "", "applies_to": ["transform"] },
+    { "id": "colorspace", "type": "enum", "label": "色彩空间", "default": "",
+      "advanced": true, "applies_to": ["transform"],
+      "enum": [
+        { "value": "", "label": "不改动" },
+        { "value": "GRAY", "label": "灰度" },
+        { "value": "sRGB", "label": "sRGB" },
+        { "value": "CMYK", "label": "CMYK" }
+      ] }
+  ],
+  "hooks": {
+    "install": {
+      "type": "command", "command": "choco",
+      "args": ["install", "graphicsmagick", "-y"],
+      "description": "用 Chocolatey 安装 GraphicsMagick（也可到 graphicsmagick.org 下载）"
+    }
+  }
+}

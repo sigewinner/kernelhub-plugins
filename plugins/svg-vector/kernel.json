@@ -1,0 +1,53 @@
+{
+  "ckp": "1.0",
+  "id": "svg-vector",
+  "name": "SVG 矢量内核（纯 Python）",
+  "version": "1.0.0",
+  "kind": "vector",
+  "description": "把 SVG 渲染成 PDF / PNG / JPG 的纯 Python 内核（svglib + reportlab，位图由 PyMuPDF 兜底光栅化），无需安装 Inkscape 等外部程序。仅支持 SVG 1.1 核心子集：不支持 CSS 样式表、滤镜与动画，复杂 SVG 建议安装 Inkscape（本平台会自动优先使用）。",
+  "homepage": "https://github.com/deeplook/svglib",
+  "license": "LGPL-3.0",
+  "priority": 35,
+  "tags": ["vector", "svg", "pdf", "png", "render", "python", "no-binary"],
+  "runtime": {
+    "type": "python",
+    "entry": "adapter.py",
+    "requires": ["svglib"]
+  },
+  "probe": { "type": "python-import", "target": "svglib" },
+  "capabilities": [
+    {
+      "id": "svg.convert",
+      "op": "convert",
+      "label": "SVG 转换",
+      "from": ["svg", "svgz"],
+      "to": ["pdf", "png", "jpg", "jpeg", "webp", "bmp", "tif", "tiff", "svg"]
+    },
+    {
+      "id": "svg.render",
+      "op": "render",
+      "label": "SVG 渲染为位图",
+      "from": ["svg", "svgz"],
+      "to": ["png", "jpg", "jpeg", "webp", "bmp", "tif", "tiff"]
+    }
+  ],
+  "params": [
+    { "id": "dpi", "type": "int", "label": "渲染 DPI", "default": 96,
+      "min": 24, "max": 2400, "when": { "to": ["png", "jpg", "jpeg", "webp", "bmp", "tif", "tiff"] } },
+    { "id": "scale", "type": "float", "label": "缩放倍率", "default": 1.0,
+      "min": 0.05, "max": 20 },
+    { "id": "transparent", "type": "bool", "label": "透明背景", "default": true,
+      "advanced": true,
+      "when": { "to": ["png", "webp", "tif", "tiff"] } },
+    { "id": "quality", "type": "int", "label": "JPEG 质量", "default": 90,
+      "min": 1, "max": 100, "when": { "to": ["jpg", "jpeg", "webp"] } }
+  ],
+  "hooks": {
+    "install": {
+      "type": "command", "command": "python",
+      "args": ["tools/pip_bootstrap.py", "install", "--target", "vendor", "-i",
+               "https://pypi.tuna.tsinghua.edu.cn/simple", "svglib", "reportlab"],
+      "description": "安装 svglib 与 reportlab"
+    }
+  }
+}
